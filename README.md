@@ -1,11 +1,22 @@
 # SP_DayTrading
 
 Packages to install
+---------------------------
+- alpha-vantage
 
-alpha-vantage
+- matplotlib
 
-matplotlib
+- mplfinance
 
-mplfinance
+- pandas
 
-pandas
+
+
+#To Do
+BY TOMORROW
+- Decide on data feed, alphavantage or something else
+- Get backtrader set-up and working with the datasource mentioned above
+
+UPCOMING
+- Do proposal by Wednesday night
+- Do pitch presentaion
