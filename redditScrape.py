@@ -2,7 +2,9 @@ import autoDD
 from alpha_vantage.timeseries import TimeSeries
 from alpha_vantage.techindicators import TechIndicators
 import matplotlib.pyplot as plt
+import pandas as pd
 import mplfinance as mpf
+
 
 ALPHAVANTAGE_API_KEY = 'AT6ABB92QYICBXX5'
 
@@ -20,6 +22,7 @@ if __name__ == '__main__':
     data, meta_data = ts.get_intraday(symbol=top_stock, interval='1min', outputsize='full')
     data = data.rename(columns={"1. open": "Open", "2. high": "High", "3. low": "Low", "4. close": "Close", "5. volume": "Volume"})
     data = data.iloc[::-1]
+    data.to_csv('datafeed.csv')
     print(data)
 
     #Get technical indicators (SMA
