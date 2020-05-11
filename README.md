@@ -13,6 +13,7 @@ Packages to install
 
 
 #To Do
+
 BY TOMORROW
 - Decide on data feed, alphavantage or something else
 - Get backtrader set-up and working with the datasource mentioned above
