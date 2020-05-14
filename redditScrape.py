@@ -42,11 +42,13 @@ class Scraper():
     
     def areThereBullishHammerTimes(self, data):
         #abs(a-b) < Threshold
-        lowThreshold = data['Low'] * 2
-        openThreshold = data['Open'] < data['Close']
-        hammerTimesSubSet = data[data['Close'] >= data['High'] - (data['High'] * (1 / 100))
-                                 and lowThreshold['Low'] < openThreshold['Open']]
-        return hammerTimesSubSet
+        #lowThreshold = data['Low'] * 2
+        #openThreshold = data['Open'] < data['Close']
+        hammerTimesSubSet = data[data['Close'] >= data['High'] - (data['High'] * (1 / 100))]
+                                 #and lowThreshold['Low'] < openThreshold['Open']]
+        hammerTimesSubSet1 = hammerTimesSubSet[hammerTimesSubSet['Open'] < hammerTimesSubSet['Close']]
+        final = hammerTimesSubSet1[hammerTimesSubSet1['Low'] * 2 < hammerTimesSubSet1['Open']]
+        return final
     
 if __name__ == '__main__':
     scraper = Scraper()
@@ -64,7 +66,7 @@ if __name__ == '__main__':
     print(type(openThreshold))
     hammertimes = scraper.areThereBullishHammerTimes(realTimeData)
     print(hammertimes)
-  #  print(hammertimes.iat[0])
+  # print(hammertimes.iat[0])
     technicalIndicators = scraper.technicalIndicators(realTimeData,topStock)
     
     #scraper.plot(realTimeData,technicalIndicators,topStock)
