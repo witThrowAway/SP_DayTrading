@@ -47,7 +47,7 @@ class Scraper():
         hammerTimesSubSet = data[data['Close'] >= data['High'] - (data['High'] * (1 / 100))]
                                  #and lowThreshold['Low'] < openThreshold['Open']]
         hammerTimesSubSet1 = hammerTimesSubSet[hammerTimesSubSet['Open'] < hammerTimesSubSet['Close']]
-        final = hammerTimesSubSet1[hammerTimesSubSet1['Low'] * 2 < hammerTimesSubSet1['Open']]
+        final = hammerTimesSubSet1[hammerTimesSubSet1['Low'] * 1.01 < hammerTimesSubSet1['Open']]
         return final
     
 if __name__ == '__main__':
