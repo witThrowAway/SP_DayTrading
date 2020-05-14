@@ -6,7 +6,7 @@ import pandas as pd
 import mplfinance as mpf
 
 
-ALPHAVANTAGE_API_KEY = 'AT6ABB92QYICBXX5'
+ALPHAVANTAGE_API_KEY = '4V135H1E1WD8KL2H'
 
 
 class Scraper():
@@ -41,18 +41,21 @@ class Scraper():
         mpf.plot(data[-50:], type='candlestick', volume=True, title='Last 25 Minutes of ' + top_stock, addplot=SMAplot)
     
     def areThereBullishHammerTimes(self, data):
-        hammerTimesSubSet = data[data['Close'] >= data['High'] - (data['High'] * (1 / 100))]
-                                 #and lowThreshold['Low'] < openThreshold['Open']]
-        hammerTimesSubSet1 = hammerTimesSubSet[hammerTimesSubSet['Open'] < hammerTimesSubSet['Close']]
-        final = hammerTimesSubSet1[hammerTimesSubSet1['Low'] * 1.01 < hammerTimesSubSet1['Open']]
+        hammerTimesSubSet = data[data['Open'] >= data['High'] - (data['High'] * (1 / 200))]
+        hammerTimesSubSet1 = hammerTimesSubSet[hammerTimesSubSet['Open'] > hammerTimesSubSet['Close']]
+        final = hammerTimesSubSet1[hammerTimesSubSet1['Low'] * 1.01 < hammerTimesSubSet1['Close']]
         return final
     
 if __name__ == '__main__':
     scraper = Scraper()
     unscreened_stocks = scraper.unscreenedStocks()
     topStock = scraper.topStock(unscreened_stocks)
-    realTimeData = scraper.getRealTimeDataForSingleStock(topStock)
-    print("HammerTimes")
+    for x in unscreened_stocks:
+        #print(x)
+        realTimeData = scraper.getRealTimeDataForSingleStock(x[0])
+        hammertimes = scraper.areThereBullishHammerTimes(realTimeData)
+        print(hammertimes)
+        
     hammertimes = scraper.areThereBullishHammerTimes(realTimeData)
     print(hammertimes)
     technicalIndicators = scraper.technicalIndicators(realTimeData,topStock)
