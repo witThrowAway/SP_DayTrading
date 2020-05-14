@@ -41,9 +41,6 @@ class Scraper():
         mpf.plot(data[-50:], type='candlestick', volume=True, title='Last 25 Minutes of ' + top_stock, addplot=SMAplot)
     
     def areThereBullishHammerTimes(self, data):
-        #abs(a-b) < Threshold
-        #lowThreshold = data['Low'] * 2
-        #openThreshold = data['Open'] < data['Close']
         hammerTimesSubSet = data[data['Close'] >= data['High'] - (data['High'] * (1 / 100))]
                                  #and lowThreshold['Low'] < openThreshold['Open']]
         hammerTimesSubSet1 = hammerTimesSubSet[hammerTimesSubSet['Open'] < hammerTimesSubSet['Close']]
@@ -55,18 +52,9 @@ if __name__ == '__main__':
     unscreened_stocks = scraper.unscreenedStocks()
     topStock = scraper.topStock(unscreened_stocks)
     realTimeData = scraper.getRealTimeDataForSingleStock(topStock)
-    print(realTimeData)
-    print(type(realTimeData.iat[0,0]))
-    #lowThreshold = realTimeData['Low'] * 2
-   # print(lowThreshold)
     print("HammerTimes")
-    lowThreshold = realTimeData['Low'] * 2
-    openThreshold = realTimeData['Open'] < realTimeData['Close']
-    print(type(lowThreshold))
-    print(type(openThreshold))
     hammertimes = scraper.areThereBullishHammerTimes(realTimeData)
     print(hammertimes)
-  # print(hammertimes.iat[0])
     technicalIndicators = scraper.technicalIndicators(realTimeData,topStock)
     
     #scraper.plot(realTimeData,technicalIndicators,topStock)
