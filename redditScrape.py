@@ -7,8 +7,8 @@ import mplfinance as mpf
 
 
 
-ALPHAVANTAGE_API_KEY = ['4V135H1E1WD8KL2H''1QHMI47XYRQ7TWAO','9FMDAA394M57MTO4','TUN4UO2WBJB6EOP8','I0QTTDE58ZSTDYBV','1TV5Q263WGF2U2WA']
-
+#ALPHAVANTAGE_API_KEY = ['4V135H1E1WD8KL2H''1QHMI47XYRQ7TWAO','9FMDAA394M57MTO4','TUN4UO2WBJB6EOP8','I0QTTDE58ZSTDYBV','1TV5Q263WGF2U2WA']
+ALPHAVANTAGE_API_KEY = '4V135H1E1WD8KL2H'
 
 class Scraper():
 
@@ -23,14 +23,21 @@ class Scraper():
         top_stock = unscreened_stocks[0][0]
         return top_stock
     
-    def getRealTimeDataForSingleStock(self, stock):
+    def getIntraDayDataForSingleStock(self, stock):
         #Get time data
         ts = TimeSeries(key=ALPHAVANTAGE_API_KEY, output_format='pandas')
         data, meta_data = ts.get_intraday(symbol=stock, interval='1min', outputsize='full')
         data = data.rename(columns={"1. open": "Open", "2. high": "High", "3. low": "Low", "4. close": "Close", "5. volume": "Volume"})
         data = data.iloc[::-1]
-        #data.to_csv('datafeed.csv')
+        data.to_csv('datafeed.csv')
         return data
+    def getRealTimeDataForSingleStock(self, stock):
+        ts = TimeSeries(key=ALPHAVANTAGE_API_KEY, output_format='pandas')
+        data, meta_data = ts.get_intraday(symbol=stock, interval = '1min', outputsize= 'full')
+        data = data.rename(columns={"1. open": "Open", "2. high": "High", "3. low": "Low", "4. close": "Close", "5. volume": "Volume"})
+        data = data.iloc[::-1]
+        return data
+
     def technicalIndicators(self,data,top_stock):
         #Get technical indicators (SMA
         ti = TechIndicators(key=ALPHAVANTAGE_API_KEY, output_format='pandas')
@@ -41,7 +48,7 @@ class Scraper():
         SMAplot = mpf.make_addplot(sma_data[-50:]['SMA'])
         mpf.plot(data[-50:], type='candlestick', volume=True, title='Last 25 Minutes of ' + top_stock, addplot=SMAplot)
     
-    def areThereBearishHammerTimes(self, data):
+    def areThereBearishHammerTimesInDataFrame(self, data):
         hammerTimesSubSet = data[data['Open'] <= data['High'] - (data['High'] * (1 / 200))]
         hammerTimesSubSet1 = hammerTimesSubSet[hammerTimesSubSet['Open'] > hammerTimesSubSet['Close']]
         final = hammerTimesSubSet1[hammerTimesSubSet1['Low'] * 1.025 < hammerTimesSubSet1['Close']]
@@ -65,7 +72,7 @@ class Scraper():
 if __name__ == '__main__':
     scraper = Scraper()
     #unscreened_stocks = scraper.unscreenedStocks()
-   # topStock = scraper.topStock(unscreened_stocks)
+    #topStock = scraper.topStock(unscreened_stocks)
     '''  for x in unscreened_stocks:
         #print(x)
         realTimeData = scraper.getRealTimeDataForSingleStock(x[0])
@@ -73,15 +80,14 @@ if __name__ == '__main__':
         print(hammertimes)
     '''
     df = pd.read_csv("/Users/ryangould/Downloads/SP_DayTrading/datafeed.csv")
-    hammertimes = scraper.areThereBearishHammerTimes(df)
+    #df = scraper.getRealTimeDataForSingleStock(topStock)
+    hammertimes = scraper.areThereBearishHammerTimesInDataFrame(df)
     simpleMovingAverage = scraper.simpleMovingAverage(379, 382, df)
     print(hammertimes)
     print(simpleMovingAverage)
-    print(df.iat[0,0])
-    print(df.iat[379,1])
-    print(df.iat[380,1])
-    print(df.iat[381,1])
-    print(df.iat[382,1])
+    print(df)
+    print("??")
+    print(df.iat[1543,0])
    # technicalIndicators = scraper.technicalIndicators(df,topStock)
     
     #scraper.plot(realTimeData,technicalIndicators,topStock)

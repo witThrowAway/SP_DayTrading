@@ -1,0 +1,86 @@
+import alpaca_trade_api as tradeapi
+import datetime
+import pandas as pd
+BASE_URL = 'https://paper-api.alpaca.markets'
+KEY_ID = 'PKXJ9PFWUR1PV0W4CR3Z'
+SECRET_KEY = 'fQPmWsENWU7hrWlxoyGrPDsOOxehqkielyVs3bJ8'
+
+
+def getBar(symbol, interval,start):
+    barset = api.get_barset(symbol, interval, limit=1, after=start)
+    mvis_bars = barset['MVIS']
+    return mvis_bars
+def isHammerBar(bar):
+    if bar[0].o <= (bar[0].h - bar[0].h * (1/200)):
+        if bar[0].o > bar[0].c:
+            if bar[0].l * 1.025 < bar[0].c:
+                return True
+def simpleMovingAverageAcrossTime(symbol, interval,start):
+    bar = api.get_barset(symbol, interval, limit=5, after=start)
+    sum = 0.0
+    simpleMovingAverage = 0.0
+    y = 0
+    n = 0
+    for x in bar:
+        y += 1
+        n += 1.0
+        sum += bar[y].c
+    simpleMovingAverage = sum/n
+    if bar[0].c > bar[3].c  and bar[3].c > bar[5].c:
+        simpleMovingAverage = -simpleMovingAverage
+
+    return simpleMovingAverage
+if __name__ == '__main__':
+    api = tradeapi.REST(KEY_ID, SECRET_KEY, BASE_URL)
+
+    account = api.get_account()
+    print(account.cash)
+
+
+    selectedTime = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=5)
+
+    print(selectedTime)
+    #bar = getBar('MVIS','1Min',selectedTime)
+    #sMA = simpleMovingAverageAcrossTime('MVIS', '1Min', selectedTime)
+    #print("%.3f" % sMA)
+    # print(bar)
+
+    # Get daily price data for XXX over the last 5 trading days.
+    #barset = api.get_barset('MVIS', '1Min', start= limit=1)
+    #mvis_bars = barset['MVIS']
+
+    #print(mvis_bars)
+
+    bar = getBar('MVIS','1Min',selectedTime)
+    df = pd.DataFrame(columns=['Time','Open','High','Low','Close','Volume'])
+    data = {'Time':[bar[0].t], 'Open':[bar[0].o], 'High':[bar[0].h], 'Low':[bar[0].l], 'Close':[bar[0].c], 'Volume':[bar[0].v]}
+    df = df.append(data,ignore_index=True)
+
+    # df.append(getBar('MVIS','1Min',selectedTime))
+    print(df)
+    #While our trading window is active (time of program start to 11:30)
+    while (datetime.datetime.now() != datetime.datetime.replace(hour=11, minute = 30)):
+        selectedTime = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=1)
+        selectedWindow = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=5)
+        #get last minute info for selected symbol
+        bar = getBar('MVIS','1Min',selectedTime)
+        #parse out data to add to dataframe
+        data = {'Time':[bar[0].t], 'Open':[bar[0].o], 'High':[bar[0].h], 'Low':[bar[0].l], 'Close':[bar[0].c], 'Volume':[bar[0].v]}
+        df = df.append(data,ignore_index=True)
+        #check if the current bar is a hammer and the last 5 bars were a negative moving average
+        if isHammerBar(bar) and simpleMovingAverageAcrossTime('MVIS','1Min',selectedWindow) < 0:
+            #buy position at hammer (current bar)
+            api.submit_order(
+                symbol='MVIS',
+                side='buy',
+                type='market',
+                qty='100',
+                time_in_force='day',
+                order_class='bracket',
+                take_profit=dict(
+                    limit_price=bar[0].c + .5,
+                ),
+                stop_loss=dict(
+                    stop_price=bar[0].c - .5,
+                )
+            )
