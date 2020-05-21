@@ -50,7 +50,10 @@ def hammerTimeTrading(df,symbol):
 
     #parse out data to add to dataframe
     data = {'Time':[bar[0].t], 'Open':[bar[0].o], 'High':[bar[0].h], 'Low':[bar[0].l], 'Close':[bar[0].c], 'Volume':[bar[0].v]}
-    df = df.append(data,ignore_index=True)
+    df = df.append(data, ignore_index=True)
+    #unused df - need to write to external storage so simpleMovingAverage can read from it
+    #to reduce overall API calls
+
     #check if the current bar is a hammer and the last 5 bars were a negative moving average
     if isHammerBar(bar) and simpleMovingAverageAcrossTime(symbol,'1Min',selectedWindow) < 0:
         #buy position at hammer (current bar)
