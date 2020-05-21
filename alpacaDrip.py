@@ -1,6 +1,7 @@
 import alpaca_trade_api as tradeapi
 import datetime
 import pandas as pd
+
 BASE_URL = 'https://paper-api.alpaca.markets'
 KEY_ID = 'PKXJ9PFWUR1PV0W4CR3Z'
 SECRET_KEY = 'fQPmWsENWU7hrWlxoyGrPDsOOxehqkielyVs3bJ8'
@@ -30,57 +31,61 @@ def simpleMovingAverageAcrossTime(symbol, interval,start):
         simpleMovingAverage = -simpleMovingAverage
 
     return simpleMovingAverage
+
+#function containing a complete strategy
+def hammerTimeTrading(df,symbol):
+    #selectedTime is always a minute behind the present
+    selectedTime = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=1)
+    #selectedWindow is always X minutes before present
+    selectedWindow = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=5)
+    #get last minute info for selected symbol
+    bar = getBar(symbol,'1Min',selectedTime)
+
+    #####block to verify if cronjob runs######
+    f = open("/Users/ryangould/Downloads/SP_DayTrading/test.txt", "a")
+    f.write(bar)
+    f.close()
+    #This block can be swapped to database write calls later on
+    ##########################################
+
+    #parse out data to add to dataframe
+    data = {'Time':[bar[0].t], 'Open':[bar[0].o], 'High':[bar[0].h], 'Low':[bar[0].l], 'Close':[bar[0].c], 'Volume':[bar[0].v]}
+    df = df.append(data,ignore_index=True)
+    #check if the current bar is a hammer and the last 5 bars were a negative moving average
+    if isHammerBar(bar) and simpleMovingAverageAcrossTime(symbol,'1Min',selectedWindow) < 0:
+        #buy position at hammer (current bar)
+        api.submit_order(
+            symbol=symbol,
+            side='buy',
+            type='market',
+            qty='100',
+            time_in_force='day',
+            order_class='bracket',
+            take_profit=dict(
+                limit_price=bar[0].c + .5,
+            ),
+            stop_loss=dict(
+                stop_price=bar[0].c - .5,
+            )
+        )
+        print('ORDER SUBMITTED')
+
 if __name__ == '__main__':
+
     api = tradeapi.REST(KEY_ID, SECRET_KEY, BASE_URL)
 
     account = api.get_account()
     print(account.cash)
 
-
-    selectedTime = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=5)
-
-    print(selectedTime)
     #bar = getBar('MVIS','1Min',selectedTime)
-    #sMA = simpleMovingAverageAcrossTime('MVIS', '1Min', selectedTime)
-    #print("%.3f" % sMA)
-    # print(bar)
-
-    # Get daily price data for XXX over the last 5 trading days.
-    #barset = api.get_barset('MVIS', '1Min', start= limit=1)
-    #mvis_bars = barset['MVIS']
-
-    #print(mvis_bars)
-
-    bar = getBar('MVIS','1Min',selectedTime)
     df = pd.DataFrame(columns=['Time','Open','High','Low','Close','Volume'])
-    data = {'Time':[bar[0].t], 'Open':[bar[0].o], 'High':[bar[0].h], 'Low':[bar[0].l], 'Close':[bar[0].c], 'Volume':[bar[0].v]}
-    df = df.append(data,ignore_index=True)
+    #data = {'Time':[bar[0].t], 'Open':[bar[0].o], 'High':[bar[0].h], 'Low':[bar[0].l], 'Close':[bar[0].c], 'Volume':[bar[0].v]}
+    #df = df.append(data,ignore_index=True)
 
     # df.append(getBar('MVIS','1Min',selectedTime))
+    #hammerTimeTrading strategy is left uncalled until cronjob works
+    #hammerTimeTrading(df,'MVIS')
     print(df)
-    #While our trading window is active (time of program start to 11:30)
-    while (datetime.datetime.now() != datetime.datetime.replace(hour=11, minute = 30)):
-        selectedTime = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=1)
-        selectedWindow = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=5)
-        #get last minute info for selected symbol
-        bar = getBar('MVIS','1Min',selectedTime)
-        #parse out data to add to dataframe
-        data = {'Time':[bar[0].t], 'Open':[bar[0].o], 'High':[bar[0].h], 'Low':[bar[0].l], 'Close':[bar[0].c], 'Volume':[bar[0].v]}
-        df = df.append(data,ignore_index=True)
-        #check if the current bar is a hammer and the last 5 bars were a negative moving average
-        if isHammerBar(bar) and simpleMovingAverageAcrossTime('MVIS','1Min',selectedWindow) < 0:
-            #buy position at hammer (current bar)
-            api.submit_order(
-                symbol='MVIS',
-                side='buy',
-                type='market',
-                qty='100',
-                time_in_force='day',
-                order_class='bracket',
-                take_profit=dict(
-                    limit_price=bar[0].c + .5,
-                ),
-                stop_loss=dict(
-                    stop_price=bar[0].c - .5,
-                )
-            )
+    f = open("/Users/ryangould/Downloads/SP_DayTrading/test.txt", "a")
+    f.write(account.cash)
+    f.close()
