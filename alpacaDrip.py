@@ -4,6 +4,7 @@ import datetime
 import pandas as pd
 import pymysql.cursors
 import pymysql
+import dbConnector as db
 
 BASE_URL = 'https://paper-api.alpaca.markets'
 KEY_ID = 'PKXJ9PFWUR1PV0W4CR3Z'
@@ -84,32 +85,10 @@ if __name__ == '__main__':
 
 
     # Connect to the database
-    connection = pymysql.connect(host='localhost',
-                             user='root',
-                             #password='admin',
-                             db='GrandExchange',
-                             charset='utf8mb4',
-                             cursorclass=pymysql.cursors.DictCursor)
-
-    try:
-        with connection.cursor() as cursor:
-            # Create a new record
-
-            sql = "INSERT INTO `Stonks` (`symbol`, `high`) VALUES (%s, %s)"
-            cursor.execute(sql, ('HUGEDICK', 1.69))
-
-        # connection is not autocommit by default. So you must commit to save
-        # your changes.
-        connection.commit()
-
-        with connection.cursor() as cursor:
-            # Read a single record
-            sql = "SELECT `id`, `symbol` FROM `Stonks` WHERE `symbol`=%s"
-            cursor.execute(sql, ('HUGEDICK',))
-            result = cursor.fetchone()
-            print(result)
-    finally:
-        connection.close()
+    connector = db.dbConnector()
+    connection = connector.createConnection()
+    connector.insertBar('symbol', 7, 6, 6, 6, 6, 6, 'barType', connection)
+    print(connector.getBarsBySymbol(connection,'symbol'))
     #print(account.cash)
 
     #bar = getBar('MVIS','1Min',selectedTime)
