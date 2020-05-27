@@ -85,10 +85,10 @@ if __name__ == '__main__':
 
 
     # Connect to the database
-    connector = db.dbConnector()
-    connection = connector.createConnection()
-    connector.insertBar('symbol', 7, 6, 6, 6, 6, 6, 'barType', connection)
-    print(connector.getBarsBySymbol(connection,'symbol'))
+    #connector = db.dbConnector()
+    #connection = connector.createConnection()
+    #connector.insertBar('symbol', 7, 6, 6, 6, 6, 6, 'barType', connection)
+    #print(connector.getBarsBySymbol(connection,'symbol'))
     #print(account.cash)
 
     #bar = getBar('MVIS','1Min',selectedTime)
