@@ -90,8 +90,9 @@ if __name__ == '__main__':
     #connector.insertBar('symbol', 7, 6, 6, 6, 6, 6, 'barType', connection)
     #print(connector.getBarsBySymbol(connection,'symbol'))
     #print(account.cash)
+    selectedTime = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=1)
 
-    #bar = getBar('MVIS','1Min',selectedTime)
+    #bar = getBar('MVIS', '1Min', selectedTime)
     #df = pd.DataFrame(columns=['Time','Open','High','Low','Close','Volume'])
     #data = {'Time':[bar[0].t], 'Open':[bar[0].o], 'High':[bar[0].h], 'Low':[bar[0].l], 'Close':[bar[0].c], 'Volume':[bar[0].v]}
     #df = df.append(data,ignore_index=True)

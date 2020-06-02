@@ -4,6 +4,8 @@ from alpha_vantage.techindicators import TechIndicators
 import matplotlib.pyplot as plt
 import pandas as pd
 import mplfinance as mpf
+import alpaca_trade_api as tradeapi
+import datetime
 
 
 
@@ -31,6 +33,9 @@ class Scraper():
         data = data.iloc[::-1]
         data.to_csv('datafeed.csv')
         return data
+    def getBar(self, symbol, interval,start):
+        barset = api.get_barset(symbol, interval, limit=1, after=start)
+        return barset
     def getRealTimeDataForSingleStock(self, stock):
         ts = TimeSeries(key=ALPHAVANTAGE_API_KEY, output_format='pandas')
         data, meta_data = ts.get_intraday(symbol=stock, interval = '1min', outputsize= 'full')
@@ -70,24 +75,28 @@ class Scraper():
         return simpleMovingAverage
     
 if __name__ == '__main__':
+    api = tradeapi.REST()
     scraper = Scraper()
-    #unscreened_stocks = scraper.unscreenedStocks()
-    #topStock = scraper.topStock(unscreened_stocks)
-    '''  for x in unscreened_stocks:
+    unscreened_stocks = scraper.unscreenedStocks()
+    topStock = scraper.topStock(unscreened_stocks)
+    selectedTime = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=1)
+
+    #for x in unscreened_stocks:
         #print(x)
-        realTimeData = scraper.getRealTimeDataForSingleStock(x[0])
-        hammertimes = scraper.areThereBullishHammerTimes(realTimeData)
-        print(hammertimes)
-    '''
-    df = pd.read_csv("/Users/ryangould/Downloads/SP_DayTrading/datafeed.csv")
+    barset = api.get_barset(topStock, '1Min', limit=1, after=selectedTime)
+    print(barset)
+        #hammertimes = scraper.areThereBullishHammerTimes(realTimeData)
+        #print(hammertimes)
+
+    #df = pd.read_csv("/Users/ryangould/Downloads/SP_DayTrading/datafeed.csv")
     #df = scraper.getRealTimeDataForSingleStock(topStock)
-    hammertimes = scraper.areThereBearishHammerTimesInDataFrame(df)
-    simpleMovingAverage = scraper.simpleMovingAverage(379, 382, df)
-    print(hammertimes)
-    print(simpleMovingAverage)
-    print(df)
-    print("??")
-    print(df.iat[1543,0])
+   # hammertimes = scraper.areThereBearishHammerTimesInDataFrame(df)
+   # simpleMovingAverage = scraper.simpleMovingAverage(379, 382, df)
+    #print(hammertimes)
+    #print(simpleMovingAverage)
+    #print(df)
+    #print("??")
+    #print(df.iat[1543,0])
    # technicalIndicators = scraper.technicalIndicators(df,topStock)
     
     #scraper.plot(realTimeData,technicalIndicators,topStock)
