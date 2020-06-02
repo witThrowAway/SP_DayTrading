@@ -27,8 +27,11 @@ if __name__ == '__main__':
     count = 0
     #iterate through symbols getting bar info for each symbol of last minute
     for i in symbols:
-        bar = api.get_barset(symbols[0], '1Min', limit=1, after=selectedTime)
-        barset = bar[symbols[0]]
+        bar = api.get_barset(symbols[count], '1Min', limit=1, after=selectedTime)
+        barset = bar[symbols[count]]
+        #print(barset)
+        #print(type(barset))
         #id - symbol - high - low - open - close - volume - shareCount - timestamp - barType
-        connector.insertBar(symbols[count], barset[0].h, barset[0].l, barset[0].o, barset[0].c, barset[0].v, 1, 'barType', connection)
+        if barset != None and barset:
+            connector.insertBar(symbols[count], barset[0].h, barset[0].l, barset[0].o, barset[0].c, barset[0].v, 1, 'barType', connection)
         count += 1
