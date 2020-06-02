@@ -9,10 +9,9 @@ SECRET_KEY = 'fQPmWsENWU7hrWlxoyGrPDsOOxehqkielyVs3bJ8'
 
 
 if __name__ == '__main__':
+
+    #initialize API information
     api = tradeapi.REST(KEY_ID, SECRET_KEY, BASE_URL)
-
-    account = api.get_account()
-
 
     # Connect to the database
     connector = db.dbConnector()
