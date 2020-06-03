@@ -63,14 +63,16 @@ class dbConnector:
         finally:
             return True
     def getBarsByTime(self, connection, timestamp):
-        sql = "SELECT * FROM `Stonks` WHERE `timestamp`=%s"
-        connection.cursor.execute(sql, (timestamp))
-        result = connection.cursor.fetchall()
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM `Stonks` WHERE `timestamp`=%s"
+            cursor.execute(sql, (timestamp))
+            result = connection.cursor.fetchall()
         return result
     def getBarsByTimeWindow(self, connection , start, end):
-        sql = "SELECT * FROM `Stonks` WHERE `timestamp`>= %s AND `timestamp <= %s"
-        connection.cursor.execute(sql, (start, end))
-        result = connection.cursor.fetchall()
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM `Stonks` WHERE `timestamp`>= %s AND `timestamp <= %s"
+            cursor.execute(sql, (start, end))
+            result = connection.cursor.fetchall()
         return result
     def getBarsBySymbol(self, connection, symbol):
         with connection.cursor() as cursor:
