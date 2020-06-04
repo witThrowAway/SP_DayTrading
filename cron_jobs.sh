@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /Users/ryangould/Downloads/SP_DayTrading/
+cd /home/trade/Desktop/SP_DayTrading/
 ./dataIngest.py
