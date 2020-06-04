@@ -83,7 +83,7 @@ class dbConnector:
     def getBarsByBarType(self, connection, barType):
         with connection.cursor() as cursor:
             sql = "SELECT * FROM `Stonks` WHERE `barType`=%s"
-            connection.cursor.execute(sql, (barType))
+            cursor.execute(sql, (barType))
             result = cursor.fetchall()
         return result
     def getTradeByTradeType(self, connection, tradeType):

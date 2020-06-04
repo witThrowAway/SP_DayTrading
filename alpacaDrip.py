@@ -77,6 +77,7 @@ class Strategy:
             )
             print('ORDER SUBMITTED')
 
+
 if __name__ == '__main__':
 
     api = api.REST(KEY_ID, SECRET_KEY, BASE_URL)

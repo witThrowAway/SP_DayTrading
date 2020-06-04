@@ -1,2 +1,2 @@
 #!/bin/bash
-#python /Users/ryangould/Downloads/SP_DayTrading/alpacaDrip.py
+python /Users/ryangould/Downloads/SP_DayTrading/alpacaDrip.py
