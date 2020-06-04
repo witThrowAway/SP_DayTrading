@@ -4,8 +4,8 @@ import redditScrape as rs
 import datetime
 
 BASE_URL = 'https://paper-api.alpaca.markets'
-KEY_ID = 'PKXJ9PFWUR1PV0W4CR3Z'
-SECRET_KEY = 'fQPmWsENWU7hrWlxoyGrPDsOOxehqkielyVs3bJ8'
+KEY_ID = 'PK14RUEPHP6AFMYLEI89'
+SECRET_KEY = 'T1aynegfVGPsy8V48zg4Fu1CLEazkaWhzpQ5l/Kj'
 
 
 if __name__ == '__main__':
