@@ -11,7 +11,7 @@ SECRET_KEY = 'fQPmWsENWU7hrWlxoyGrPDsOOxehqkielyVs3bJ8'
 if __name__ == '__main__':
 
 
-    if datetime.datetime.now().time() > datetime.time(9,30):
+    #if datetime.datetime.now().time() > datetime.time(9,30):
         #initialize API information
         api = tradeapi.REST(KEY_ID, SECRET_KEY, BASE_URL)
 
