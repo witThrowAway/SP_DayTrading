@@ -1,2 +1,2 @@
-#!/bin/bash
-python /Users/ryangould/Downloads/SP_DayTrading/alpacaDrip.py
+#!/bin/sh
+python /Users/ryangould/Downloads/SP_DayTrading/dataIngest.py
