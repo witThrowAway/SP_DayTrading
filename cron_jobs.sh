@@ -1,2 +1,3 @@
 #!/bin/bash
-python /Users/ryangould/Downloads/SP_DayTrading/dataIngest.py
+cd /Users/ryangould/Downloads/SP_DayTrading/
+./dataIngest.py
