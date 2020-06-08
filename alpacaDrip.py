@@ -19,12 +19,11 @@ class Strategy:
     def simpleMovingAverageAcrossTime(self, workingSet):
         sum = 0.0
         simpleMovingAverage = 0.0
-        y = 0
         n = 0.0
-        for x in workingSet:
-            y += 1
-            n += 1.0
+        y = 0
+        for x in workingSet[0:5]:
             sum += workingSet[y]['close']
+            y += 1
         simpleMovingAverage = sum/5
         if workingSet[0]['close'] > workingSet[3]['close']  and workingSet[3]['close'] > workingSet[4]['close']:
             simpleMovingAverage = -simpleMovingAverage
