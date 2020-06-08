@@ -24,9 +24,9 @@ class Strategy:
         for x in workingSet:
             y += 1
             n += 1.0
-            sum += workingSet[y].c
+            sum += workingSet[y]['close']
         simpleMovingAverage = sum/5
-        if workingSet[0].c > workingSet[3].c  and workingSet[3].c > workingSet[4].c:
+        if workingSet[0]['close'] > workingSet[3]['close']  and workingSet[3]['close'] > workingSet[4]['close']:
             simpleMovingAverage = -simpleMovingAverage
 
         return simpleMovingAverage
