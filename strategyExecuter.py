@@ -16,6 +16,7 @@ if __name__ == "__main__":
         window = datetime.datetime.now() - datetime.timedelta(minutes=5)
         workingSet = connector.getBarsByTimeWindow(connection, window, now)
         strategy = ad.Strategy()
+        print(workingSet)
         sma = strategy.simpleMovingAverageAcrossTime(workingSet)
 
         for x in workingSet[0:4]:
