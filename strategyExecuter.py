@@ -18,7 +18,7 @@ if __name__ == "__main__":
         strategy = ad.Strategy()
         sma = strategy.simpleMovingAverageAcrossTime(workingSet)
 
-        for x in workingSet[0:5]:
+        for x in workingSet[0:4]:
             strategy.hammerTimeTrading(sma, x)
             if strategy.hammerTimeTrading(sma, x):
                 connector.insertTrade(x['symbol'], x['high'], x['low'], x['open'], x['close'], x['volume'], 'x', x['barType'])
