@@ -70,7 +70,7 @@ class dbConnector:
         return result
     def getBarsByTimeWindow(self, connection , start, end):
         with connection.cursor() as cursor:
-            sql = "SELECT * FROM `Stonks` WHERE `timestamp` BETWEEN %s AND %s"
+            sql = "SELECT * FROM `Stonks` WHERE `timestamp` BETWEEN %s AND %s ORDER BY symbol ASC"
             cursor.execute(sql, (start, end))
             result = cursor.fetchall()
         return result

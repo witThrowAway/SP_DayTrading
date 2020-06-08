@@ -19,10 +19,10 @@ class Strategy:
     def simpleMovingAverageAcrossTime(self, workingSet):
         sum = 0.0
         simpleMovingAverage = 0.0
-        y = 0.0
+        y = 0
         n = 0.0
         for x in workingSet:
-            y += 1.0
+            y += 1
             n += 1.0
             sum += workingSet[y].c
         simpleMovingAverage = sum/5
