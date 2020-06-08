@@ -14,9 +14,7 @@ if __name__ == "__main__":
         #create time window (5min intervals)
         now = datetime.datetime.now()
         window = datetime.datetime.now() - datetime.timedelta(minutes=5)
-
         workingSet = connector.getBarsByTimeWindow(connection, window, now)
-
         strategy = ad.Strategy()
         sma = strategy.simpleMovingAverageAcrossTime(workingSet)
 
