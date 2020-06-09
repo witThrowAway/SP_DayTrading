@@ -51,4 +51,6 @@ class Strategy:
             )
             print('ORDER SUBMITTED')
 
-        return True
+            return True
+        else:
+            return False
