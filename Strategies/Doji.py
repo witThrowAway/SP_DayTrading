@@ -1,14 +1,13 @@
 import alpaca_trade_api as api
 import datetime
 import pandas as pd
-import self as self
 import dbConnector as db
 
 BASE_URL = "https://paper-api.alpaca.markets"
 KEY_ID = "PKTAKBFROQY3CPRTEAK4"
 SECRET_KEY = "gsBf1RofsWoQRexZobxhxd4sVScmNzDG6zY92x83"
 
-#gusBranch2
+
 class PythonDojiTrader:
     def get_data(self, symbol, bar, interval, start):
         pacabar = api.get_barset(symbol, interval, limit=1)
