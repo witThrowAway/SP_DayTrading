@@ -1,6 +1,6 @@
 import dbConnector as db
 import alpaca_trade_api as tradeapi
-import redditScrape as rs
+from Scrapers import redditScrape as rs
 import datetime
 import alpacaDrip as ad
 

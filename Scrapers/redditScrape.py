@@ -1,8 +1,6 @@
-import autoDD
+from Scrapers import autoDD
 from alpha_vantage.timeseries import TimeSeries
 from alpha_vantage.techindicators import TechIndicators
-import matplotlib.pyplot as plt
-import pandas as pd
 import mplfinance as mpf
 import alpaca_trade_api as tradeapi
 import datetime
