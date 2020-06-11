@@ -23,10 +23,13 @@ if __name__ == '__main__':
         connection = connector.createConnection()
 
         #create scraper object to get symbols from redditScrape
-        unscreened_stocks = rs.scrape()
         selectedTime = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=1)
-        #edit list of tuples to be a list of symbols
-        symbols = [i[0] for i in unscreened_stocks]
+        unscreened_stocks = connector.getMentions(connection)
+        symbols = []
+        count = 0
+        for x in unscreened_stocks:
+            symbols.append(unscreened_stocks[count]["symbol"])
+            count +=1
         count = 0
         barType = 'barType'
         strategy = ad.Strategy()
@@ -36,9 +39,9 @@ if __name__ == '__main__':
             #bar = api.get_barset(symbols[count], '1Min', limit=1, after=selectedTime)
             df = api.polygon.historic_agg_v2(symbols[count], 1, 'minute' ,limit=1, _from=millis-120000, to=millis).df
             #check if barset has a value to account for API response time
-            if df != None and df:
-                if strategy.isHammerBar(df):
-                    barType = 'hammer'
+            if not df.empty:
+                #if strategy.isHammerBar(df):
+                    #barType = 'hammer'
                 #symbol - high - low - open - close - volume - shareCount - timestamp - barType
                 connector.insertBar(symbols[count], df['high'], df['low'], df['open'], df['close'], df['volume'], 1, barType, connection)
             count += 1

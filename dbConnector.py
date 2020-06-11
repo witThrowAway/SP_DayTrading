@@ -46,13 +46,13 @@ class dbConnector:
             return False
         finally:
             return True
-    def insertMention(self, symbol, stockwtiz, subreddit2, connection):
+    def insertMention(self, symbol, connection):
         try:
             with connection.cursor() as cursor:
                 # Create a new record
 
-                sql = "INSERT INTO `Mentions` (`symbol`, `stockwitz`, `subreddit2`) VALUES (%s, %s, %s)"
-                cursor.execute(sql, (symbol, stockwtiz, subreddit2))
+                sql = "INSERT INTO `Mentions` (`symbol`) VALUES (%s)"
+                cursor.execute(sql, (symbol))
 
                 # connection is not autocommit by default. So you must commit to save
                 # your changes.
@@ -98,5 +98,9 @@ class dbConnector:
             cursor.execute(sql, (symbol))
             result = cursor.fetchall()
         return result
-    def getMentions(self):
-        return True
+    def getMentions(self, connection):
+        with connection.cursor() as cursor:
+            sql = "SELECT symbol FROM `Mentions`"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+        return result

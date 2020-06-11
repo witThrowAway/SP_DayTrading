@@ -45,7 +45,9 @@ def parsePage():
 
 
         for m in parsedStocks:
-            stockObjects.append(marketWatchStock(m))
+            if '.' not in m[0]:
+                print (m)
+                stockObjects.append(marketWatchStock(m))
 
         if ('Next&nbsp;') not in page.text:
             return stockObjects
