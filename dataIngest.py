@@ -1,12 +1,9 @@
 import dbConnector as db
 import alpaca_trade_api as tradeapi
-from Scrapers import redditScrape as rs
+from Scrapers import redditScraper as rs
 import datetime
 import alpacaDrip as ad
 
-BASE_URL = 'https://paper-api.alpaca.markets'
-KEY_ID = 'PK14RUEPHP6AFMYLEI89'
-SECRET_KEY = 'T1aynegfVGPsy8V48zg4Fu1CLEazkaWhzpQ5l/Kj'
 
 
 if __name__ == '__main__':
@@ -14,22 +11,26 @@ if __name__ == '__main__':
 
     if datetime.datetime.now().time() > datetime.time(9,30):
         #initialize API information
-        api = tradeapi.REST(KEY_ID, SECRET_KEY, BASE_URL)
+        api = tradeapi.REST(
+            key_id='AKI81T1TR0P0KOFHGE9K',
+            secret_key=r'6BsKrTdP0WdXSARbufPFV7hVjtwoYGDAx/3ZG9VK',
+            base_url='https://paper-api.alpaca.markets'
+        )
 
         # Connect to the database
         connector = db.dbConnector()
         connection = connector.createConnection()
 
         #create scraper object to get symbols from redditScrape
-        scraper = rs.Scraper()
-        unscreened_stocks = scraper.unscreenedStocks()
+        unscreened_stocks = rs.scrape()
         selectedTime = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=1)
         #edit list of tuples to be a list of symbols
         symbols = [i[0] for i in unscreened_stocks]
         count = 0
         barType = 'barType'
         strategy = ad.Strategy()
-    #iterate through symbols getting bar info for each symbol of last minute
+
+        #iterate through symbols getting bar info for each symbol of last minute
         for i in symbols:
             bar = api.get_barset(symbols[count], '1Min', limit=1, after=selectedTime)
             barset = bar[symbols[count]]
