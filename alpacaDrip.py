@@ -12,9 +12,9 @@ SECRET_KEY = 'fQPmWsENWU7hrWlxoyGrPDsOOxehqkielyVs3bJ8'
 
 class Strategy:
     def isHammerBar(self, bar):
-        if bar[0].o <= (bar[0].h - bar[0].h * (1/200)):
-            if bar[0].o > bar[0].c:
-                if bar[0].l * 1.025 < bar[0].c:
+        if bar['open'] <= (bar['high'] - bar['high'] * (1/200)):
+            if bar['open'] > bar['close']:
+                if bar['low'] * 1.025 < bar['close']:
                     return True
     def simpleMovingAverageAcrossTime(self, workingSet):
         sum = 0.0

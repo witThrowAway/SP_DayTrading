@@ -3,6 +3,7 @@ import alpaca_trade_api as tradeapi
 from Scrapers import redditScraper as rs
 import datetime
 import alpacaDrip as ad
+import time
 
 
 
@@ -29,15 +30,15 @@ if __name__ == '__main__':
         count = 0
         barType = 'barType'
         strategy = ad.Strategy()
-
+        millis = int(round(time.time() * 1000))
         #iterate through symbols getting bar info for each symbol of last minute
         for i in symbols:
-            bar = api.get_barset(symbols[count], '1Min', limit=1, after=selectedTime)
-            barset = bar[symbols[count]]
+            #bar = api.get_barset(symbols[count], '1Min', limit=1, after=selectedTime)
+            df = api.polygon.historic_agg_v2(symbols[count], 1, 'minute' ,limit=1, _from=millis-120000, to=millis).df
             #check if barset has a value to account for API response time
-            if barset != None and barset:
-                if strategy.isHammerBar(barset):
+            if df != None and df:
+                if strategy.isHammerBar(df):
                     barType = 'hammer'
                 #symbol - high - low - open - close - volume - shareCount - timestamp - barType
-                connector.insertBar(symbols[count], barset[0].h, barset[0].l, barset[0].o, barset[0].c, barset[0].v, 1, barType, connection)
+                connector.insertBar(symbols[count], df['high'], df['low'], df['open'], df['close'], df['volume'], 1, barType, connection)
             count += 1
