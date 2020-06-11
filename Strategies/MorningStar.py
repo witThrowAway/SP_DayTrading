@@ -7,8 +7,6 @@ BASE_URL = "https://paper-api.alpaca.markets"
 KEY_ID = "PKTAKBFROQY3CPRTEAK4"
 SECRET_KEY = "gsBf1RofsWoQRexZobxhxd4sVScmNzDG6zY92x83"
 
-
-
 class PythonStarTrader:
     def get_star(self, symbol, bar, interval, limit, start):
         pacabar = api.get_barset(symbol, interval, limit=1)
