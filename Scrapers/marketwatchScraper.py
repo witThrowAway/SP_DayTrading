@@ -9,11 +9,12 @@ class marketWatchStock:
         self.companyName = stock[1]
         self.price = stock[2]
         self.change = stock[3]
-        self.changePercent = stock[4]
+
+        self.changePercent = float((stock[4].replace('+','')).replace('%',''))
         self.volume = stock[5]
         self.moreInfo = stock[6]
 
-def parsePage():
+def scrape():
 
     endpoint = 'https://www.marketwatch.com/tools/stockresearch/screener/results.asp?submit=Screen&Symbol=true&Symbol=false&ChangePct=true&ChangePct=false&FiftyTwoWeekLow=false&CompanyName=true&CompanyName=false&Volume=true&Volume=false&PERatio=false&Price=true&Price=false&LastTradeTime=false&MarketCap=false&Change=true&Change=false&FiftyTwoWeekHigh=false&MoreInfo=true&MoreInfo=false&SortyBy=Price&SortDirection=Descending&ResultsPerPage=OneHundred&TradesShareEnable=true&TradesShareMin=&TradesShareMax=5&PriceDirEnable=true&PriceDir=Up&PriceDirPct=6&LastYearEnable=false&LastYearAboveHigh=&TradeVolEnable=true&TradeVolMin=250000&TradeVolMax=10000000&BlockEnable=false&BlockAmt=&BlockTime=&PERatioEnable=false&PERatioMin=&PERatioMax=&MktCapEnable=false&MktCapMin=&MktCapMax=&MovAvgEnable=false&MovAvgType=Outperform&MovAvgTime=FiftyDay&MktIdxEnable=false&MktIdxType=Outperform&MktIdxPct=&MktIdxExchange=&Exchange=All&IndustryEnable=false&Industry=Accounting'
     page = requests.get(endpoint)
@@ -46,7 +47,6 @@ def parsePage():
 
         for m in parsedStocks:
             if '.' not in m[0]:
-                print (m)
                 stockObjects.append(marketWatchStock(m))
 
         if ('Next&nbsp;') not in page.text:

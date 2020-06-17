@@ -7,8 +7,8 @@ class dbConnector:
     def createConnection(self):
         # Connect to the database
         connection = pymysql.connect(host='localhost',
-                                 user='root',
-                                 #password='admin',
+                                 user='phpmyadmin',
+                                 password='toor',
                                  db='GrandExchange',
                                  charset='utf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
@@ -18,15 +18,14 @@ class dbConnector:
         try:
             with connection.cursor() as cursor:
                 # Create a new record
-
+                #print(symbol, high, low, open, close, volume, connection)
                 sql = "INSERT INTO `Stonks` (`symbol`, `high`, `low`, `open`, `close`, `volume`, `shareCount`, `barType`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
                 cursor.execute(sql, (symbol, high, low, open, close, volume, shareCount, barType))
-
                 # connection is not autocommit by default. So you must commit to save
                 # your changes.
                 connection.commit()
-        except ConnectionError:
-            print("Connection Error")
+        except Exception as e:
+            print(str(e))
             return False
         finally:
             return True
@@ -62,6 +61,23 @@ class dbConnector:
             return False
         finally:
             return True
+
+    def insertMarketWatchObject(self, symbol, price, change, changePercent, volume, connection):
+        try:
+            with connection.cursor() as cursor:
+                # Create a new record
+                sql = "INSERT INTO `MarketWatch` (`symbol`, `price`, `priceChange`, `changePercent`, `volume`) VALUES (%s, %s, %s, %s, %s)"
+                cursor.execute(sql, (symbol, price, change, changePercent, volume))
+
+                # connection is not autocommit by default. So you must commit to saveyour changes.
+                connection.commit()
+        except Exception as e:
+            print(str(e))
+            return False
+        finally:
+            return True
+
+
     def getBarsByTime(self, connection, timestamp):
         with connection.cursor() as cursor:
             sql = "SELECT * FROM `Stonks` WHERE `timestamp`=%s"
@@ -104,3 +120,16 @@ class dbConnector:
             cursor.execute(sql)
             result = cursor.fetchall()
         return result
+
+    def getMarketWatchData(self, connection):
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM `MarketWatch`"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+        return result
+
+    def purgeMarketWatchDB(self, connection):
+        with connection.cursor() as cursor:
+            sql = "Delete FROM `MarketWatch`"
+            cursor.execute(sql)
+        return True
