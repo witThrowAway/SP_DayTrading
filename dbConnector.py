@@ -68,10 +68,10 @@ class dbConnector:
             cursor.execute(sql, (timestamp))
             result = connection.cursor.fetchall()
         return result
-    def getBarsByTimeWindow(self, connection , start, end):
+    def getBarsByTimeWindow(self, connection, start, end, symbol):
         with connection.cursor() as cursor:
-            sql = "SELECT * FROM `Stonks` WHERE `timestamp` BETWEEN %s AND %s ORDER BY symbol ASC"
-            cursor.execute(sql, (start, end))
+            sql = "SELECT * FROM `Stonks` WHERE `symbol` = %s AND `timestamp` BETWEEN %s AND %s ORDER BY symbol ASC"
+            cursor.execute(sql, (symbol, start, end))
             result = cursor.fetchall()
         return result
     def getBarsBySymbol(self, connection, symbol):

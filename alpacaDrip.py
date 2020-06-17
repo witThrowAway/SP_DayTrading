@@ -33,24 +33,26 @@ class Strategy:
     #function containing a complete strategy
     def hammerTimeTrading(self, sma, symbol, bar):
         #check if the current bar is a hammer and the last 5 bars were a negative moving average
-        if bar[0]['barType'] == 'hammer' and sma < 0:
+        if bar['barType'] == 'hammer' and sma < 0:
             #buy position at hammer (current bar)
             api.submit_order(
                 symbol=symbol,
                 side='buy',
-                type='market',
+                type='limit',
                 qty='100',
                 time_in_force='day',
                 order_class='bracket',
                 take_profit=dict(
-                    limit_price=bar[0].c + .5,
+                    limit_price=bar['close'] + .5,
                 ),
                 stop_loss=dict(
-                    stop_price=bar[0].c - .5,
+                    stop_price=bar['close'] - .5,
                 )
             )
             print('ORDER SUBMITTED')
 
             return True
+        #if we have an order and pice > 3% or < 1% of buy in
+            #sell 
         else:
             return False
