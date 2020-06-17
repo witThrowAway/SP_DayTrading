@@ -1,6 +1,4 @@
-import dbConnector as db
-import sys
-sys.path.append('Scrapers')
+from Desktop.SP_DayTrading import dbConnector as db
 import redditScraper as rs
 import stocktwitScraper as st
 import marketwatchScraper as ms

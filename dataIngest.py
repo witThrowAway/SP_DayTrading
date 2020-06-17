@@ -4,7 +4,7 @@ from Scrapers import redditScraper as rs
 import datetime
 import alpacaDrip as ad
 import time
-
+from numpy import float as floaty
 
 
 if __name__ == '__main__':
@@ -40,8 +40,13 @@ if __name__ == '__main__':
             df = api.polygon.historic_agg_v2(symbols[count], 1, 'minute' ,limit=1, _from=millis-120000, to=millis).df
             #check if barset has a value to account for API response time
             if not df.empty:
+                #print(type(df['high']))
                 #if strategy.isHammerBar(df):
                     #barType = 'hammer'
                 #symbol - high - low - open - close - volume - shareCount - timestamp - barType
-                connector.insertBar(symbols[count], df['high'], df['low'], df['open'], df['close'], df['volume'], 1, barType, connection)
+                try:
+                    connector.insertBar(symbols[count], floaty(df['high']), floaty(df['low']), floaty(df['open']),
+                                        floaty(df['close']), floaty(df['volume']), 1, barType, connection)
+                except Exception as e:
+                    print(str(e))
             count += 1
