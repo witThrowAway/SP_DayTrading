@@ -41,12 +41,12 @@ if __name__ == '__main__':
             #check if barset has a value to account for API response time
             if not df.empty:
                 #print(type(df['high']))
-                #if strategy.isHammerBar(df):
-                    #barType = 'hammer'
+                if strategy.isHammerBar(df):
+                    barType = 'hammer'
                 #symbol - high - low - open - close - volume - shareCount - timestamp - barType
                 try:
                     connector.insertBar(symbols[count], floaty(df['high']), floaty(df['low']), floaty(df['open']),
-                                        floaty(df['close']), floaty(df['volume']), 1, barType, connection)
+                                        #floaty(df['close']), floaty(df['volume']), 1, barType, connection)
                 except Exception as e:
                     print(str(e))
             count += 1

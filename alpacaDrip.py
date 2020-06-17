@@ -12,8 +12,8 @@ SECRET_KEY = 'fQPmWsENWU7hrWlxoyGrPDsOOxehqkielyVs3bJ8'
 
 class Strategy:
     def isHammerBar(self, bar):
-        if bar['open'] <= (bar['high'] - bar['high'] * (1/200)):
-            if bar['open'] > bar['close']:
+        if bar['OPEN'] <= (bar['high'] - bar['high'] * (1/200)):
+            if bar['OPEN'] > bar['close']:
                 if bar['low'] * 1.025 < bar['close']:
                     return True
     def simpleMovingAverageAcrossTime(self, workingSet):
@@ -21,7 +21,7 @@ class Strategy:
         simpleMovingAverage = 0.0
         n = 0.0
         y = 0
-        for x in workingSet[0:5]:
+        for x in workingSet[0:4]:
             sum += workingSet[y]['close']
             y += 1
         simpleMovingAverage = sum/5
@@ -33,7 +33,7 @@ class Strategy:
     #function containing a complete strategy
     def hammerTimeTrading(self, sma, symbol, bar):
         #check if the current bar is a hammer and the last 5 bars were a negative moving average
-        if bar['barType'] == 'hammer' and sma < 0:
+        if bar[0]['barType'] == 'hammer' and sma < 0:
             #buy position at hammer (current bar)
             api.submit_order(
                 symbol=symbol,

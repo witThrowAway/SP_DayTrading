@@ -1,14 +1,15 @@
 import pymysql.cursors
 import pymysql
+from datetime import date
 
 class dbConnector:
     def __init__(self):
         print("dbObject created")
     def createConnection(self):
         # Connect to the database
-        connection = pymysql.connect(host='localhost',
-                                 user='phpmyadmin',
-                                 password='toor',
+        connection = pymysql.connect(host='73.186.158.111',
+                                 user='trade0',
+                                 password='Mountain11231!',
                                  db='GrandExchange',
                                  charset='utf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
@@ -116,8 +117,9 @@ class dbConnector:
         return result
     def getMentions(self, connection):
         with connection.cursor() as cursor:
-            sql = "SELECT symbol FROM `Mentions`"
-            cursor.execute(sql)
+            timestamp = date.today()
+            sql = "SELECT symbol FROM `Mentions` WHERE `timestamp` > %s "
+            cursor.execute(sql, timestamp)
             result = cursor.fetchall()
         return result
 
@@ -131,5 +133,10 @@ class dbConnector:
     def purgeMarketWatchDB(self, connection):
         with connection.cursor() as cursor:
             sql = "Delete FROM `MarketWatch`"
+            cursor.execute(sql)
+        return True
+    def purgeMentions(self, connection):
+        with connection.cursor() as cursor:
+            sql = "Delete FROM `Mentions`"
             cursor.execute(sql)
         return True

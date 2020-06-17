@@ -14,14 +14,19 @@ if __name__ == "__main__":
         #create time window (5min intervals)
         now = datetime.datetime.now()
         window = datetime.datetime.now() - datetime.timedelta(minutes=5)
-        symbols = connector.get
-        workingSet = connector.getBarsByTimeWindow(connection, window, now, symbol)
+        symbols = connector.getMentions(connection)
         strategy = ad.Strategy()
-        sma = strategy.simpleMovingAverageAcrossTime(workingSet)
-
-        for x in workingSet[0:4]:
-            strategy.hammerTimeTrading(sma, x['symbol'], workingSet)
-            if strategy.hammerTimeTrading(sma, x['symbol'], workingSet):
-                connector.insertTrade(x['symbol'], x['high'], x['low'], x['OPEN'], x['close'], x['volume'], 0, x['barType'], 'hammerTrade', connection)
+        sma = 0
+        for x in symbols:
+            workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
+            #print(workingSet)
+            #print(len(workingSet))
+            if len(workingSet) > 5:
+                sma = strategy.simpleMovingAverageAcrossTime(workingSet)
+                for x in workingSet:
+                    strategy.isHammerBar(x)
+                    strategy.hammerTimeTrading(sma, x['symbol'], workingSet)
+                    if strategy.hammerTimeTrading(sma, x['symbol'], workingSet):
+                        connector.insertTrade(x['symbol'], x['high'], x['low'], x['OPEN'], x['close'], x['volume'], 0, x['barType'], 'hammerTrade', connection)
 
 

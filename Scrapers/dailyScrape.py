@@ -1,4 +1,5 @@
-from Desktop.SP_DayTrading import dbConnector as db
+#from Desktop.SP_DayTrading
+import dbConnector as db
 import redditScraper as rs
 import stocktwitScraper as st
 import marketwatchScraper as ms
@@ -16,17 +17,12 @@ if __name__ == '__main__':
     symbols = [i[0] for i in redditScraperStocks]
 
     #marketWatch
-    marketWatchObjects = ms.parsePage()
+    marketWatchObjects = ms.scrape()
     marketWatchStocks = []
     for stockObject in marketWatchObjects:
         marketWatchStocks.append(stockObject.symbol)
 
-    #stocktwits
-    request = st.get_trending_stocks()
-    for x in request:
+    for x in marketWatchStocks[1:75]:
         connector.insertMention(x,connection)
-    for x in marketWatchStocks:
+    for x in symbols[1:75]:
         connector.insertMention(x,connection)
-    for x in symbols:
-        connector.insertMention(x,connection)
-
