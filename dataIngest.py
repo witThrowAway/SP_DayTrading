@@ -46,7 +46,7 @@ if __name__ == '__main__':
                 #symbol - high - low - open - close - volume - shareCount - timestamp - barType
                 try:
                     connector.insertBar(symbols[count], floaty(df['high']), floaty(df['low']), floaty(df['open']),
-                                        #floaty(df['close']), floaty(df['volume']), 1, barType, connection)
+                                        floaty(df['close']), floaty(df['volume']), 1, barType, connection)
                 except Exception as e:
                     print(str(e))
             count += 1
