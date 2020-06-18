@@ -4,7 +4,7 @@ import datetime
 import pandas as pd
 import pymysql.cursors
 import pymysql
-import dbConnector as db
+import numpy as np
 
 BASE_URL = 'https://paper-api.alpaca.markets'
 KEY_ID = 'PKXJ9PFWUR1PV0W4CR3Z'
@@ -12,9 +12,10 @@ SECRET_KEY = 'fQPmWsENWU7hrWlxoyGrPDsOOxehqkielyVs3bJ8'
 
 class Strategy:
     def isHammerBar(self, bar):
-        if bar['OPEN'] <= (bar['high'] - bar['high'] * (1/200)):
-            if bar['OPEN'] > bar['close']:
-                if bar['low'] * 1.025 < bar['close']:
+        print(bar)
+        if True == np.where(bar['OPEN'] <= (bar['high'] - bar['high'] * (1/200)),True,False):
+            if True == np.where(bar['OPEN'] > bar['close'],True,False):
+                if True == np.where(bar['low'] * 1.025 < bar['close'],True,False):
                     return True
     def simpleMovingAverageAcrossTime(self, workingSet):
         sum = 0.0

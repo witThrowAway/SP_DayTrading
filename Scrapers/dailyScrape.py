@@ -1,8 +1,7 @@
 #from Desktop.SP_DayTrading
-import dbConnector as db
-import redditScraper as rs
-import stocktwitScraper as st
-import marketwatchScraper as ms
+from Desktop.SP_DayTrading import dbConnector as db
+import Desktop.SP_DayTrading.Scrapers.redditScraper as rs
+import Desktop.SP_DayTrading.Scrapers.marketwatchScraper as ms
 
 
 

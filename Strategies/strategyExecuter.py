@@ -1,6 +1,6 @@
-import alpacaDrip as ad
+import Desktop.SP_DayTrading.alpacaDrip as ad
 import datetime
-import dbConnector as db
+from Desktop.SP_DayTrading import dbConnector as db
 
 
 if __name__ == "__main__":

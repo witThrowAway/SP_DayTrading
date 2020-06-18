@@ -25,6 +25,7 @@ if __name__ == '__main__':
         #create scraper object to get symbols from redditScrape
         selectedTime = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=1)
         unscreened_stocks = connector.getMentions(connection)
+        print(unscreened_stocks)
         symbols = []
         count = 0
         for x in unscreened_stocks:
@@ -45,8 +46,11 @@ if __name__ == '__main__':
                     barType = 'hammer'
                 #symbol - high - low - open - close - volume - shareCount - timestamp - barType
                 try:
+                    print(df)
                     connector.insertBar(symbols[count], floaty(df['high']), floaty(df['low']), floaty(df['open']),
-                                        #floaty(df['close']), floaty(df['volume']), 1, barType, connection)
+
+
+                                        floaty(df['close']), floaty(df['volume']), 1, barType, connection)
                 except Exception as e:
                     print(str(e))
             count += 1

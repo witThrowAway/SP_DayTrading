@@ -118,6 +118,7 @@ class dbConnector:
     def getMentions(self, connection):
         with connection.cursor() as cursor:
             timestamp = date.today()
+            print(timestamp)
             sql = "SELECT symbol FROM `Mentions` WHERE `timestamp` > %s "
             cursor.execute(sql, timestamp)
             result = cursor.fetchall()
