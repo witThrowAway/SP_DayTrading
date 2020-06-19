@@ -13,8 +13,8 @@ SECRET_KEY = 'fQPmWsENWU7hrWlxoyGrPDsOOxehqkielyVs3bJ8'
 class Strategy:
     def isHammerBar(self, bar):
         print(bar)
-        if True == np.where(bar['OPEN'] <= (bar['high'] - bar['high'] * (1/200)),True,False):
-            if True == np.where(bar['OPEN'] > bar['close'],True,False):
+        if True == np.where(bar['open'] <= (bar['high'] - bar['high'] * (1/200)),True,False):
+            if True == np.where(bar['open'] > bar['close'],True,False):
                 if True == np.where(bar['low'] * 1.025 < bar['close'],True,False):
                     return True
     def simpleMovingAverageAcrossTime(self, workingSet):
