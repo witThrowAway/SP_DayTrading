@@ -2,12 +2,11 @@ import alpaca_trade_api as api
 import datetime
 import pandas as pd
 import dbConnector as db
+import numpy as np
 
 BASE_URL = "https://paper-api.alpaca.markets"
 KEY_ID = "PKTAKBFROQY3CPRTEAK4"
 SECRET_KEY = "gsBf1RofsWoQRexZobxhxd4sVScmNzDG6zY92x83"
-
-
 
 class PythonStarTrader:
     def get_star(self, symbol, bar, interval, limit, start):
@@ -20,6 +19,7 @@ class PythonStarTrader:
         print("dbObject created")
 
     def isMorningStar(self, bar):
+    #make original if statement for (5,8,13) that is also how avg will be calculated
 
         if bar[0]['open'] > bar[1]['open'] and bar[2]['open'] < bar[1]['open']:
 
@@ -29,23 +29,26 @@ class PythonStarTrader:
 
                     return True
 
-
-    def shortMovingAverage(self, symbol, interval, start):
-
+    #Idea is to get short term 20 min average of a stock going down and reversing(5,8,13 bar avgs)
+    def shortMovingAverage(self, symbol, interval, window, dataSet, start):
         bar = api.get_barset(symbol, interval, limit=5, after=start)
-
         minutes = []
         window_period = 0.0
         i = 0
         moving_average = 0.0
-        avg_change= 0.0
-        for x in bar:
+
+        weights = np.repeat(1.0, window) /window
+        smas = np.convolve(symbol, weights, 'valid')
+
+        for x in dataSet[0:13]:
             i += 1
+            moving_average = window_period / minutes
 
-        moving_average = avg_change/window_period
         if bar[10].c <= bar[5].c and bar[5].c <= bar[1].c:
-
             return moving_average
+
+        print (moving_average)
+
 
 
     def create_order(self, db, side, symbol, type, qty, time_in_force):
@@ -95,6 +98,7 @@ if __name__ == '__main__':
     p1 = data[1]['symbol']
     print(p1)
 
+    print(account)
     trader = PythonStarTrader()
     print(trader.isMorningStar(data))
 
