@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Backtest Results</title>
+</head>
+<body>
+
+
+<table>
+    <tr>
+        <th>Stock</th>
+        <th>Profit</th>
+        <th>Trades</th>
+    </tr>
+
+    {% for position in alltrades %}
+    <tr>
+        <td>{{position[0]}}</td>
+        <td>${{position[2]}}</td>
+
+        <td>
+        {% for move in position[1] %}
+            {{move}}<br>
+        {% endfor %}
+        </td>
+
+    </tr>
+    {% endfor %}
+
+</table>
+
+
+</body>
+</html>
