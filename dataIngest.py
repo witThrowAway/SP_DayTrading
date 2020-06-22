@@ -25,7 +25,7 @@ if __name__ == '__main__':
         #create scraper object to get symbols from redditScrape
         selectedTime = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=1)
         unscreened_stocks = connector.getMentions(connection)
-        print(unscreened_stocks)
+        #print(unscreened_stocks)
         symbols = []
         count = 0
         for x in unscreened_stocks:

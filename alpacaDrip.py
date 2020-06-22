@@ -15,7 +15,9 @@ class Strategy:
         if True == np.where(bar['open'] <= (bar['high'] - bar['high'] * (1/200)),True,False):
             if True == np.where(bar['open'] > bar['close'],True,False):
                 if True == np.where(bar['low'] * 1.025 < bar['close'],True,False):
-                    return True
+                    if True == np.where(bar['low'] != bar['high'], True, False):
+                        if True == np.where(bar['open'] != bar['close']):
+                            return True
     def simpleMovingAverageAcrossTime(self, workingSet):
         sum = 0.0
         simpleMovingAverage = 0.0
@@ -33,7 +35,7 @@ class Strategy:
     #function containing a complete strategy
     def hammerTimeTrading(self, sma, symbol, bar):
         #check if the current bar is a hammer and the last 5 bars were a negative moving average
-        if bar[0]['barType'] == 'hammer' and sma < 0:
+        if self.isHammerBar(bar[0]) and sma < 0:
             #buy position at hammer (current bar)
             api.submit_order(
                 symbol=symbol,

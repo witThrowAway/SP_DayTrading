@@ -26,7 +26,6 @@ if __name__ == "__main__":
                 if len(workingSet) > 5:
                     sma = strategy.simpleMovingAverageAcrossTime(workingSet)
                     for x in workingSet:
-                        strategy.isHammerBar(x)
                         strategy.hammerTimeTrading(sma, x['symbol'], workingSet)
                         if strategy.hammerTimeTrading(sma, x['symbol'], workingSet):
                             connector.insertTrade(x['symbol'], x['high'], x['low'], x['OPEN'], x['close'], x['volume'], 0, x['barType'], 'hammerTrade', connection)
