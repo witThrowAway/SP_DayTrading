@@ -1,7 +1,8 @@
-#from Desktop.SP_DayTrading
-from Desktop.SP_DayTrading import dbConnector as db
-import Desktop.SP_DayTrading.Scrapers.redditScraper as rs
-import Desktop.SP_DayTrading.Scrapers.marketwatchScraper as ms
+import sys
+sys.path.append('/home/trade/Desktop/SP_DayTrading/')
+import dbConnector as db
+from Scrapers import redditScraper as rs
+from Scrapers import marketwatchScraper as ms
 
 
 
