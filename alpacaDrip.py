@@ -14,21 +14,35 @@ class Strategy:
     def isHammerBar(self, bar):
         if True == np.where(bar['open'] <= (bar['high'] - bar['high'] * (1/200)),True,False):
             if True == np.where(bar['open'] > bar['close'],True,False):
-                if True == np.where(bar['low'] * 1.025 < bar['close'],True,False):
+                if True == np.where(bar['low'] * 1.045 < bar['close'],True,False):
                     if True == np.where(bar['low'] != bar['high'], True, False):
-                        if True == np.where(bar['open'] != bar['close']):
                             return True
-    def simpleMovingAverageAcrossTime(self, workingSet):
+    def simpleMovingAverageAcrossTime(self, workingSet, start, end):
         sum = 0.0
         simpleMovingAverage = 0.0
         n = 0.0
         y = 0
-        for x in workingSet[0:4]:
+        for x in workingSet[start:end]:
             sum += workingSet[y]['close']
             y += 1
         simpleMovingAverage = sum/5
-        if workingSet[0]['close'] > workingSet[3]['close']  and workingSet[3]['close'] > workingSet[4]['close']:
+        if workingSet[start]['close'] > workingSet[start+3]['close']  and workingSet[start+3]['close'] > workingSet[end]['close']:
             simpleMovingAverage = -simpleMovingAverage
+
+        return simpleMovingAverage
+    def backtestSMA(self, workingSet, start, end):
+        sum = 0.0
+        simpleMovingAverage = 0.0
+        n = 0.0
+        y = 0
+        for x in workingSet[start:end]:
+            sum += workingSet.iloc[y]['close']
+            y += 1
+        simpleMovingAverage = sum/5
+        #if simpleMovingAverage < workingSet[start]:
+        if workingSet.iloc[start]['close'] > workingSet.iloc[start+3]['close']  and workingSet.iloc[start+3]['close'] > workingSet.iloc[end]['close']:
+            simpleMovingAverage = -simpleMovingAverage
+
 
         return simpleMovingAverage
 
@@ -54,7 +68,3 @@ class Strategy:
             print('ORDER SUBMITTED')
 
             return True
-        #if we have an order and pice > 3% or < 1% of buy in
-            #sell 
-        else:
-            return False
