@@ -46,7 +46,7 @@ if __name__ == '__main__':
                     barType = 'hammer'
                 #symbol - high - low - open - close - volume - shareCount - timestamp - barType
                 try:
-                    print(df)
+                    #print(df)
                     connector.insertBar(symbols[count], floaty(df['high']), floaty(df['low']), floaty(df['open']),
 
 

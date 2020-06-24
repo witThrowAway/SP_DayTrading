@@ -1,5 +1,7 @@
-import Desktop.SP_DayTrading.Scrapers.marketwatchScraper as ms
-from Desktop.SP_DayTrading import dbConnector as db
+import sys
+sys.path.append('/home/trade/Desktop/SP_DayTrading/')
+import dbConnector as db
+from Scrapers import marketwatchScraper as ms
 
 
 if __name__ == '__main__':
