@@ -22,33 +22,27 @@ if __name__ == '__main__':
         connector = db.dbConnector()
         connection = connector.createConnection()
 
-        #create scraper object to get symbols from redditScrape
+        # create scraper object to get symbols from redditScrape
         selectedTime = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=1)
         unscreened_stocks = connector.getMentions(connection)
-        #print(unscreened_stocks)
-        symbols = []
-        count = 0
-        for x in unscreened_stocks:
-            symbols.append(unscreened_stocks[count]["symbol"])
-            count +=1
         count = 0
         barType = 'barType'
         strategy = ad.Strategy()
         millis = int(round(time.time() * 1000))
-        #iterate through symbols getting bar info for each symbol of last minute
-        for i in symbols:
-            #bar = api.get_barset(symbols[count], '1Min', limit=1, after=selectedTime)
-            df = api.polygon.historic_agg_v2(symbols[count], 1, 'minute' ,limit=1, _from=millis-120000, to=millis).df
-            #check if barset has a value to account for API response time
+        # iterate through symbols getting bar info for each symbol of last minute
+        for i in unscreened_stocks[0:84]:
+            # bar = api.get_barset(symbols[count], '1Min', limit=1, after=selectedTime)
+            df = api.polygon.historic_agg_v2(unscreened_stocks[count]["symbol"], 1, 'minute', limit=1,
+                                             _from=millis - 120000, to=millis).df
+            # check if barset has a value to account for API response time
             if not df.empty:
-                #print(type(df['high']))
+                # print(type(df['high']))
                 if strategy.isHammerBar(df):
                     barType = 'hammer'
-                #symbol - high - low - open - close - volume - shareCount - timestamp - barType
+                # symbol - high - low - open - close - volume - shareCount - timestamp - barType
                 try:
-                    #print(df)
-                    connector.insertBar(symbols[count], floaty(df['high']), floaty(df['low']), floaty(df['open']),
-
+                    # print(df)
+                    connector.insertBar(unscreened_stocks[count]["symbol"], floaty(df['high']), floaty(df['low']), floaty(df['open']),
 
                                         floaty(df['close']), floaty(df['volume']), 1, barType, connection)
                 except Exception as e:
