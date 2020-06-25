@@ -45,7 +45,6 @@ if __name__ == "__main__":
                 barNumber = 0
                 if len(workingSet) == 5:
                     for x in workingSet:
-                        print(x)
                         closePrice = workingSet[barNumber]['close']
                         sma = strategy.simpleMovingAverageAcrossTime(workingSet,0,currentBar)
                         if strategy.isHammerBar(workingSet[barNumber]) and sma < 0:
@@ -64,18 +63,25 @@ if __name__ == "__main__":
                                 if (buyPrice < closePrice):
                                     alltrades.append(str((x[barNumber])) + ' Sell at: ' + str(closePrice))
                                     cash += (shares * closePrice)
+                                    print(alltrades[len(alltrades)-1])
                                     currentPosition = 0
+                                    connector.insertTrade(x['symbol'], x['high'], x['low'], x['open'], x['close'], x['volume'], 0, x['barType'], 'hammerSell', connection)
 
 
-                            elif closePrice <= lossProfit:
+
+                    elif closePrice <= lossProfit:
                                 alltrades.append(str((x[barNumber])) + ' Sell at: ' + str(closePrice))
                                 cash += (shares * closePrice)
                                 currentPosition = 0
+                                print(alltrades[len(alltrades)-1])
+                                connector.insertTrade(x['symbol'], x['high'], x['low'], x['open'], x['close'], x['volume'], 0, x['barType'], 'hammerSell', connection)
 
-                            elif buyClose <= x[barNumber]['timestamp'].time():
+
+                    elif buyClose <= x[barNumber]['timestamp'].time():
                                 alltrades.append(str((df.index[barNumber])) + ' Sell at: ' + str(closePrice))
                                 cash += (shares * closePrice)
                                 currentPosition = 0
+                                print(alltrades[len(alltrades)-1])
                                 connector.insertTrade(x['symbol'], x['high'], x['low'], x['open'], x['close'], x['volume'], 0, x['barType'], 'hammerSell', connection)
                 barNumber += 1
 
