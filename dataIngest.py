@@ -3,13 +3,13 @@ import alpaca_trade_api as tradeapi
 from Scrapers import redditScraper as rs
 import datetime
 import alpacaDrip as ad
-import time
+import pandas as pd
 from numpy import float as floaty
 
 
 if __name__ == '__main__':
 
-
+    start = datetime.datetime.now()
     if datetime.datetime.now().time() > datetime.time(9,30):
         #initialize API information
         api = tradeapi.REST(
@@ -22,29 +22,32 @@ if __name__ == '__main__':
         connector = db.dbConnector()
         connection = connector.createConnection()
 
-        # create scraper object to get symbols from redditScrape
-        selectedTime = datetime.datetime.now() - datetime.timedelta(hours=0, minutes=1)
+        #Create time window to make api call for
+        now = datetime.datetime.now()
+        window = datetime.datetime.now() - datetime.timedelta(minutes=1)
+
         unscreened_stocks = connector.getMentions(connection)
         count = 0
         barType = 'barType'
         strategy = ad.Strategy()
-        millis = int(round(time.time() * 1000))
+        #millis = int(round(time.time() * 1000))
         # iterate through symbols getting bar info for each symbol of last minute
-        for i in unscreened_stocks[0:84]:
+        for x in unscreened_stocks:
             # bar = api.get_barset(symbols[count], '1Min', limit=1, after=selectedTime)
-            df = api.polygon.historic_agg_v2(unscreened_stocks[count]["symbol"], 1, 'minute', limit=1,
-                                             _from=millis - 120000, to=millis).df
-            # check if barset has a value to account for API response time
+            df = pd.DataFrame()
+            tryCounter = 0
+            # check if df has a value to account for API response time
+            while df.empty and tryCounter < 10:
+                df = api.polygon.historic_agg_v2(unscreened_stocks[count]["symbol"], 1, 'minute', limit=1,
+                                             _from=str(window), to=str(now)).df
+                tryCounter +=1
+            count += 1
             if not df.empty:
-                # print(type(df['high']))
                 if strategy.isHammerBar(df):
                     barType = 'hammer'
                 # symbol - high - low - open - close - volume - shareCount - timestamp - barType
                 try:
-                    # print(df)
                     connector.insertBar(unscreened_stocks[count]["symbol"], floaty(df['high']), floaty(df['low']), floaty(df['open']),
-
-                                        floaty(df['close']), floaty(df['volume']), 1, barType, connection)
+                                floaty(df['close']), floaty(df['volume']), 1, barType, connection)
                 except Exception as e:
                     print(str(e))
-            count += 1
