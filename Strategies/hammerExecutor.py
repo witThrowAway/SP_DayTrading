@@ -12,7 +12,7 @@ import alpacaDrip as ad
 
 if __name__ == "__main__":
 
-    #start this strategy at 9:35 AM
+        #start this strategy at 9:35 AM
         if datetime.datetime.now().time() > datetime.time(9,35) and datetime.datetime.now().time() < datetime.time(12,00):
             # Connect to the database
             connector = db.dbConnector()
@@ -24,11 +24,11 @@ if __name__ == "__main__":
             symbols = connector.getMentions(connection)
             strategy = ad.Strategy()
             ############ make value dynamic
-            cash = 25000
+            #cash = 25000
+            cash = connector.getCash(connection,1)
             ############
             sma = 0
             #barNumber = 0
-            currentPosition = None
             buyPrice = 0
             shares = 0
             takeProfitPercent = 1.03
@@ -43,7 +43,10 @@ if __name__ == "__main__":
                 workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
                 currentBar = len(workingSet)-1
                 barNumber = 0
-                if len(workingSet) == 5:
+                currentPosition = connector.getPosition(connection, x['symbol'])
+                if len(currentPosition) == 0:
+                    currentPosition = 0
+            if len(workingSet) == 5:
                     for x in workingSet:
                         closePrice = workingSet[barNumber]['close']
                         sma = strategy.simpleMovingAverageAcrossTime(workingSet,0,currentBar)
@@ -52,9 +55,10 @@ if __name__ == "__main__":
                             buyPrice = x[barNumber]['close']
                             shares = int(maxPosition / closePrice)
                             cash = cash - shares * closePrice
+                            connector.modifyCash(connection, cash, 1)
                             takeProfit = takeProfitPercent * buyPrice
                             lossProfit = lossProfitPercent * buyPrice
-                            currentPosition = 1
+                            connector.modifyPosition(connection,x['symbol'])
                             connector.insertTrade(x['symbol'], x['high'], x['low'], x['open'], x['close'], x['volume'], 0, x['barType'], 'hammerBuy', connection)
 
 
@@ -63,8 +67,9 @@ if __name__ == "__main__":
                                 if (buyPrice < closePrice):
                                     alltrades.append(str((x[barNumber])) + ' Sell at: ' + str(closePrice))
                                     cash += (shares * closePrice)
+                                    connector.modifyCash(connection, cash, 1)
                                     print(alltrades[len(alltrades)-1])
-                                    currentPosition = 0
+                                    connector.modifyPosition(connection,x['symbol'])
                                     connector.insertTrade(x['symbol'], x['high'], x['low'], x['open'], x['close'], x['volume'], 0, x['barType'], 'hammerSell', connection)
 
 
@@ -72,7 +77,8 @@ if __name__ == "__main__":
                     elif closePrice <= lossProfit:
                                 alltrades.append(str((x[barNumber])) + ' Sell at: ' + str(closePrice))
                                 cash += (shares * closePrice)
-                                currentPosition = 0
+                                connector.modifyCash(connection, cash, 1)
+                                connector.modifyPosition(connection,x['symbol'])
                                 print(alltrades[len(alltrades)-1])
                                 connector.insertTrade(x['symbol'], x['high'], x['low'], x['open'], x['close'], x['volume'], 0, x['barType'], 'hammerSell', connection)
 
@@ -80,8 +86,9 @@ if __name__ == "__main__":
                     elif buyClose <= x[barNumber]['timestamp'].time():
                                 alltrades.append(str((df.index[barNumber])) + ' Sell at: ' + str(closePrice))
                                 cash += (shares * closePrice)
+                                connector.modifyCash(connection, cash, 1)
                                 currentPosition = 0
                                 print(alltrades[len(alltrades)-1])
                                 connector.insertTrade(x['symbol'], x['high'], x['low'], x['open'], x['close'], x['volume'], 0, x['barType'], 'hammerSell', connection)
-                barNumber += 1
+                    barNumber += 1
 

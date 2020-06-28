@@ -80,7 +80,7 @@ def backtest():
 
             if strat == 'bband_rsi_algo':
                 alltrades = backtesting.algoStart(api, stocks, from_date, to_date, cash)
-
+            #if strat == 'hammer':
 
 
             return render_template('backtestresults.html', alltrades=alltrades)

@@ -118,7 +118,6 @@ class dbConnector:
     def getMentions(self, connection):
         with connection.cursor() as cursor:
             timestamp = date.today()
-            print(timestamp)
             sql = "SELECT symbol FROM `Mentions` WHERE `timestamp` > %s "
             cursor.execute(sql, timestamp)
             result = cursor.fetchall()
@@ -141,3 +140,35 @@ class dbConnector:
             sql = "Delete FROM `Mentions`"
             cursor.execute(sql)
         return True
+    def insertPosition(self, connection, symbol):
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO `currentPositions` (`symbol`, `position`) VALUES (%s, 1)"
+            cursor.execute(sql, symbol)
+        return True
+    def modifyPosition(self, connection, symbol):
+        with connection.cursor() as cursor:
+            sql = "UPDATE `currentPositions` SET `position` = 0 WHERE `symbol` = %s"
+            cursor.execute(sql, (symbol))
+        return True
+    def getPosition(self,connection,symbol):
+        with connection.cursor() as cursor:
+            sql = "SELECT position FROM `currentPositions` WHERE `symbol` = %s"
+            cursor.execute(sql,symbol)
+            result = cursor.fetchall()
+        return result
+    def insertCash(self, connection, value):
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO `cash` (`currentCash`) VALUES (%s)"
+            cursor.execute(sql,value)
+        return True
+    def modifyCash(self, connection, value, id):
+        with connection.cursor() as cursor:
+            sql = "UPDATE `cash` SET `currentCash` = %s WHERE `id` = %s"
+            cursor.execute(sql, (value,id))
+        return True
+    def getCash(self,connection,id):
+        with connection.cursor() as cursor:
+            sql = "SELECT cash FROM `currentPositions` WHERE `symbol` = %s"
+            cursor.execute(sql,id)
+            result = cursor.fetchall()
+        return result
