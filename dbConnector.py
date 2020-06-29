@@ -158,7 +158,7 @@ class dbConnector:
         return result
     def insertCash(self, connection, value):
         with connection.cursor() as cursor:
-            sql = "INSERT INTO `cash` (`currentCash`) VALUES (%s)"
+            sql = "INSERT INTO `currentCash` VALUES (%s)"
             cursor.execute(sql,value)
         return True
     def modifyCash(self, connection, value, id):
@@ -168,7 +168,7 @@ class dbConnector:
         return True
     def getCash(self,connection,id):
         with connection.cursor() as cursor:
-            sql = "SELECT cash FROM `currentPositions` WHERE `symbol` = %s"
+            sql = "SELECT currentCash FROM `currentPositions` WHERE `symbol` = %s"
             cursor.execute(sql,id)
             result = cursor.fetchall()
         return result
