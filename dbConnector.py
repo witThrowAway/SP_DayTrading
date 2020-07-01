@@ -149,6 +149,7 @@ class dbConnector:
         with connection.cursor() as cursor:
             sql = "UPDATE `currentPositions` SET `position` = 0 WHERE `symbol` = %s"
             cursor.execute(sql, (symbol))
+            connection.commit()
         return True
     def getPosition(self,connection,symbol):
         with connection.cursor() as cursor:
@@ -157,18 +158,31 @@ class dbConnector:
             result = cursor.fetchall()
         return result
     def insertCash(self, connection, value):
-        with connection.cursor() as cursor:
-            sql = "INSERT INTO `currentCash` VALUES (%s)"
-            cursor.execute(sql,value)
-        return True
+        try:
+            with connection.cursor() as cursor:
+                sql = "INSERT INTO `currentCash` (cash) VALUES (%s)"
+                cursor.execute(sql,value)
+                connection.commit()
+        except Exception as e:
+            print(str(e))
+            return False
+        finally:
+            return True
+
     def modifyCash(self, connection, value, id):
         with connection.cursor() as cursor:
             sql = "UPDATE `cash` SET `currentCash` = %s WHERE `id` = %s"
             cursor.execute(sql, (value,id))
+            connection.commit()
         return True
     def getCash(self,connection,id):
-        with connection.cursor() as cursor:
-            sql = "SELECT currentCash FROM `currentPositions` WHERE `symbol` = %s"
-            cursor.execute(sql,id)
-            result = cursor.fetchall()
-        return result
+        try:
+            with connection.cursor() as cursor:
+                sql = "SELECT cash FROM `currentCash` WHERE `id` = %s"
+                cursor.execute(sql,id)
+                result = cursor.fetchall()
+        except Exception as e:
+            print(str(e))
+            return False
+        finally:
+            return result
