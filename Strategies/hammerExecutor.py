@@ -25,7 +25,8 @@ if __name__ == "__main__":
             strategy = ad.Strategy()
             ############ make value dynamic
             #cash = 25000
-            cash = connector.getCash(connection,1)
+            cash = connector.getCash(connection,9)
+            cash = cash[0]['cash']
             ############
             sma = 0
             #barNumber = 0
@@ -44,9 +45,10 @@ if __name__ == "__main__":
                 currentBar = len(workingSet)-1
                 barNumber = 0
                 currentPosition = connector.getPosition(connection, x['symbol'])
+                currentPosition = currentPosition[0]['position']
                 if len(currentPosition) == 0:
                     currentPosition = 0
-            if len(workingSet) == 5:
+                if len(workingSet) == 5:
                     for x in workingSet:
                         closePrice = workingSet[barNumber]['close']
                         sma = strategy.simpleMovingAverageAcrossTime(workingSet,0,currentBar)
@@ -87,7 +89,7 @@ if __name__ == "__main__":
                                 alltrades.append(str((df.index[barNumber])) + ' Sell at: ' + str(closePrice))
                                 cash += (shares * closePrice)
                                 connector.modifyCash(connection, cash, 1)
-                                currentPosition = 0
+                                connector.modifyPosition(connection,x['symbol'])
                                 print(alltrades[len(alltrades)-1])
                                 connector.insertTrade(x['symbol'], x['high'], x['low'], x['open'], x['close'], x['volume'], 0, x['barType'], 'hammerSell', connection)
                     barNumber += 1

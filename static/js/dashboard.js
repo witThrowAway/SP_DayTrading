@@ -1,3 +1,4 @@
+import { websocketClient } from "polygon.io";
 
 (function () {
   'use strict'
@@ -43,3 +44,23 @@
     }
   })
 }())
+
+function getGraphData() {
+
+const stocksWS = websocketClient("PKVAPQS1G0L00QDLGCZR").getStocksWebsocket();
+
+stocksWs.on("message", raw => {
+  const message = JSON.parse(raw);
+  console.log(message)
+  switch (message.ev) {
+    case "T":
+      // your trade message handler
+      console.log(message.ev)
+      break;
+  }
+});
+
+stocksWS.send({ action: "subscribe", params: "T.MSFT" });
+
+
+}
