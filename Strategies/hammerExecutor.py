@@ -32,8 +32,8 @@ if __name__ == "__main__":
             #barNumber = 0
             buyPrice = 0
             shares = 0
-            takeProfitPercent = 1.03
-            lossProfitPercent = .97
+            takeProfitPercent = 1.06
+            lossProfitPercent = .96
             maxPosition = cash * .1
             buyClose = datetime.time(hour=12, minute=0, second=0, microsecond=0)
             alltrades = []

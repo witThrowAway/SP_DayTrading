@@ -1,44 +1,79 @@
 import alpaca_trade_api as tradeapi
+import json
+import candleGraph
+import io
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
 import ta
 import pandas as pd
 import time
 import datetime
 from numpy import float as floaty
 from flask import Flask, render_template, request, flash, get_flashed_messages
+from flask_table import Table, Col
 import dbConnector as db
 import backtesting
+import sys
+sys.path.append('/Users/ryangould/Downloads/SP_DayTrading/.idea/Entities')
+import scrapedStocks
+import scrapedStocksTable
 
 
 #Global Variables
-ALPACA_KEY_ID = 'PKKJ09PTT163PO3V428W'
-ALPACA_SECRET_KEY = r'kp0o8PWbO/XP1saBZRk98UDK2eQcr6Nacai219NR'
+ALPACA_KEY_ID = 'PKFVIO2UTE0RQCA10VY2'
+ALPACA_SECRET_KEY = r'UbQc/3SLmA5wv4EbesUh0t5dbUBdLAl/OtaEurrN'
 SECRET_KEY = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
+
+
 
 app = Flask(__name__)
 app.secret_key=SECRET_KEY
 
 positionsOpen = []
 cash = 0
-
 api = tradeapi.REST(
     key_id=ALPACA_KEY_ID,
     secret_key=ALPACA_SECRET_KEY,
-    base_url='https://paper-api.alpaca.markets'
+    base_url='https://paper-api.alpaca.markets/'
 )
+
 
 def update_api_keys():
     global api
-    tradeapi.REST(
-        key_id=ALPACA_KEY_ID,
-        secret_key=ALPACA_SECRET_KEY,
-        base_url='https://paper-api.alpaca.markets'
+    api = tradeapi.REST(
+        key_id='PKVAPQS1G0L00QDLGCZR',
+        secret_key=r'y1HeX5CzRaTIWpTcc2kQHu5zL0xJw6dG2BGQ8sk6',
+        base_url='https://paper-api.alpaca.markets/'
     )
 
 
 
-@app.route('/')
+@app.route('/', methods = ['GET','POST'])
 def dashboard():
-    return render_template('dashboard.html')
+    if request.method == 'GET':
+        global symbol
+        connector = db.dbConnector()
+        connection = connector.createConnection()
+
+        scrapedStocks = connector.getMentions(connection);
+        symbols = []
+        for x in scrapedStocks:
+            symbols.append(x['symbol'])
+
+    if request.method == 'POST':
+        symbol = request.form.get('symbol')
+
+        df = api.polygon.historic_agg_v2(symbol, 1, 'minute', _from='2020-07-01', to='2020-07-01').df
+        df['timestamp'] = df.index
+        df = df.reset_index(drop=True)
+        print(df)
+        return render_template('graph.html', df = df.to_json(), symbol=symbol)
+
+    return render_template('dashboard.html', symbols = symbols)
+
+@app.route("/graph" , methods=['GET','POST'])
+def test():
+    return render_template('graph.html')
 
 @app.route('/config', methods=['GET', 'POST'])
 def config():
