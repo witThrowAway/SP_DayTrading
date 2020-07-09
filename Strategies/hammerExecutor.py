@@ -45,9 +45,10 @@ if __name__ == "__main__":
                 currentBar = len(workingSet)-1
                 barNumber = 0
                 currentPosition = connector.getPosition(connection, x['symbol'])
-                currentPosition = currentPosition[0]['position']
                 if len(currentPosition) == 0:
                     currentPosition = 0
+                else:
+                    currentPosition = currentPosition[0]['position']
                 if len(workingSet) == 5:
                     for x in workingSet:
                         closePrice = workingSet[barNumber]['close']
