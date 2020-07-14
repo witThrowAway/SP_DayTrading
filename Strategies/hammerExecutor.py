@@ -7,6 +7,7 @@ sys.path.append('/home/trade/Desktop/SP_DayTrading/')
 
 import dbConnector as db
 import alpacaDrip as ad
+import senkouB as sb
 
 
 
@@ -48,14 +49,13 @@ if __name__ == "__main__":
                     currentBar = len(workingSet)-1
                     #print(workingSet[0]['close'])
                     sma = strategy.simpleMovingAverageAcrossTime(workingSet,0,currentBar)
-                    barNumber = 0
                     currentPosition = connector.getPosition(connection, x['symbol'])
                     #print(sma)
                     if len(currentPosition) == 0:
                         currentPosition = 0
                     else:
                         currentPosition = currentPosition[0]['position']
-                        closePrice = workingSet[barNumber]['close']
+                        closePrice = workingSet[currentBar]['close']
                         if strategy.isHammerBar(workingSet[currentBar]) and sma < 0:
                                 alltrades.append(str((x[currentBar])) + ' Buy at: ' + str(closePrice))
                                 buyPrice = x[currentBar]['close']
@@ -65,6 +65,7 @@ if __name__ == "__main__":
                                 takeProfit = takeProfitPercent * buyPrice
                                 lossProfit = lossProfitPercent * buyPrice
                                 connector.modifyPosition(connection,workingSet[currentBar]['symbol'])
+gi
                                 connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], 0, workingSet[currentBar]['barType'], 'hammerBuy', connection)
 
 
@@ -89,7 +90,7 @@ if __name__ == "__main__":
                                     connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], 0, workingSet[currentBar]['barType'], 'hammerSell', connection)
 
 
-                        elif buyClose <= workingSet[barNumber]['timestamp'].time():
+                        elif buyClose <= workingSet[currentBar]['timestamp'].time():
                                     alltrades.append(str((df.index[currentBar])) + ' Sell at: ' + str(closePrice))
                                     cash += (shares * closePrice)
                                     connector.modifyCash(connection, cash, 1)
