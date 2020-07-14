@@ -6,10 +6,8 @@ from numpy import float as floaty
 import alpacaDrip as ad
 import dbConnector as db
 
-#Global Variables
-ALPACA_KEY_ID = 'PKKJ09PTT163PO3V428W'
-ALPACA_SECRET_KEY = r'kp0o8PWbO/XP1saBZRk98UDK2eQcr6Nacai219NR'
-SECRET_KEY = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
+ALPACA_KEY_ID = 'PK3VZLXGJAE5FPVLWCOU'
+ALPACA_SECRET_KEY = r'NtLnmeY6PtUpPXD2kGblhezLg/6f4lHqEcIqrR/3'
 
 api = tradeapi.REST(
     key_id=ALPACA_KEY_ID,
@@ -111,12 +109,12 @@ def backTestHammer(api, stock, from_time, to_time, cash):
     marketOpen = datetime.time(hour=9, minute=40, second=0, microsecond=0)
     buyClose = datetime.time(hour=12, minute=0, second=0, microsecond=0)
 
-    currentPosition = None
+    currentPosition = 0
     barNumber = 1
     buyPrice = 0
     shares = 0
     takeProfitPercent = 1.06
-    lossProfitPercent = .97
+    lossProfitPercent = .96
     maxPosition = cash * .1
 
     takeProfit = floaty()
@@ -124,46 +122,48 @@ def backTestHammer(api, stock, from_time, to_time, cash):
 
 
     df = api.polygon.historic_agg_v2(stock, 1, 'minute', _from=from_time, to=to_time).df
-
+    print("df ", df)
     strategy = ad.Strategy()
-    try:
+    if not df.empty:
         while barNumber <= len(df) - 1:
-            if (df.index[barNumber].time() > marketOpen and df.index[barNumber].time() < buyClose) or currentPosition:
-                if barNumber > 5:
-                    closePrice = df.iloc[barNumber]['close']
-                    start = barNumber - 5
-                    sma = strategy.backtestSMA(df, start, barNumber)
+                if (df.index[barNumber].time() > marketOpen and df.index[barNumber].time() < buyClose) or currentPosition:
+                    if barNumber > 5:
+                        closePrice = df.iloc[barNumber]['close']
+                        start = barNumber - 5
+                        sma = strategy.backtestSMA(df, start, barNumber)
+                        boolean = strategy.isHammerBar(df.iloc[barNumber])
+                        #print("SMA:",sma, "  ", "start", df.iloc[start]['close'])
+                        #print("isHammer:", boolean)
+                        if strategy.isHammerBar(df.iloc[barNumber]) and sma < 0 and currentPosition == 0:
+                            alltrades.append(str((df.index[barNumber])) + ' Buy at: ' + str(closePrice))
+                            buyPrice = df.iloc[barNumber]['close']
+                            shares = int(maxPosition / closePrice)
+                            cash = cash - shares * closePrice
+                            takeProfit = takeProfitPercent * buyPrice
+                            lossProfit = lossProfitPercent * buyPrice
+                            currentPosition = 1
 
-                    if strategy.isHammerBar(df.iloc[barNumber]) and sma < 0:
-                        alltrades.append(str((df.index[barNumber])) + ' Buy at: ' + str(closePrice))
-                        buyPrice = df.iloc[barNumber]['close']
-                        shares = int(maxPosition / closePrice)
-                        cash = cash - shares * closePrice
-                        takeProfit = takeProfitPercent * buyPrice
-                        lossProfit = lossProfitPercent * buyPrice
-                        currentPosition = 1
+                        if currentPosition == 1:
+                            if closePrice >= takeProfit:
+                                if (buyPrice < closePrice):
+                                    alltrades.append(str((df.index[barNumber])) + ' Sell at: ' + str(closePrice))
+                                    cash += (shares * closePrice)
+                                    currentPosition = 0
 
-                    if currentPosition == 1:
-                        if closePrice >= takeProfit:
-                            if (buyPrice < closePrice):
+
+                            elif closePrice <= lossProfit:
                                 alltrades.append(str((df.index[barNumber])) + ' Sell at: ' + str(closePrice))
                                 cash += (shares * closePrice)
                                 currentPosition = 0
 
+                            elif buyClose <= df.index[barNumber].time():
+                                alltrades.append(str((df.index[barNumber])) + ' Sell at: ' + str(closePrice))
+                                cash += (shares * closePrice)
+                                currentPosition = 0
+                barNumber += 1
 
-                        elif closePrice <= lossProfit:
-                            alltrades.append(str((df.index[barNumber])) + ' Sell at: ' + str(closePrice))
-                            cash += (shares * closePrice)
-                            currentPosition = 0
-
-                        elif buyClose <= df.index[barNumber].time():
-                            alltrades.append(str((df.index[barNumber])) + ' Sell at: ' + str(closePrice))
-                            cash += (shares * closePrice)
-                            currentPosition = 0
-            barNumber += 1
-
-    except Exception as e:
-        print(str(e.args))
+   #except Exception as e:
+    #    print(str(e.args))
 
     return alltrades, floaty(cash)
 
@@ -187,8 +187,8 @@ if __name__ == '__main__':
               'PETZ', 'LMFA', 'BYFC', 'SNSS', 'CARV', 'NVFY', 'NTN']
     stocks2 = []
     stocks1 = ['PETZ', 'LMFA', 'BYFC', 'SNSS', 'CARV', 'NVFY', 'NTN']
-    from_time = '2020-06-24'
-    to_time = '2020-06-25'
+    from_time = '2020-06-01'
+    to_time = '2020-07-05'
     connector = db.dbConnector()
     connection = connector.createConnection()
     symbols = connector.getMentions(connection)
