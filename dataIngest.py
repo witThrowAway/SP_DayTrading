@@ -12,9 +12,12 @@ if __name__ == '__main__':
     start = datetime.datetime.now()
     if datetime.datetime.now().time() > datetime.time(9,30):
         #initialize API information
+        ALPACA_KEY_ID = 'PK3VZLXGJAE5FPVLWCOU'
+        ALPACA_SECRET_KEY = r'NtLnmeY6PtUpPXD2kGblhezLg/6f4lHqEcIqrR/3'
+
         api = tradeapi.REST(
-            key_id='AKI81T1TR0P0KOFHGE9K',
-            secret_key=r'6BsKrTdP0WdXSARbufPFV7hVjtwoYGDAx/3ZG9VK',
+            key_id=ALPACA_KEY_ID,
+            secret_key=ALPACA_SECRET_KEY,
             base_url='https://paper-api.alpaca.markets'
         )
 
@@ -30,7 +33,6 @@ if __name__ == '__main__':
         count = 0
         barType = 'barType'
         strategy = ad.Strategy()
-        #millis = int(round(time.time() * 1000))
         # iterate through symbols getting bar info for each symbol of last minute
         for x in unscreened_stocks:
             # bar = api.get_barset(symbols[count], '1Min', limit=1, after=selectedTime)
