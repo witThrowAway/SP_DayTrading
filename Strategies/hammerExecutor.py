@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
 
 
-                        elif closePrice <= lossProfit:
+                                    elif closePrice <= lossProfit:
                                         alltrades.append(str((x[currentBar])) + ' Sell at: ' + str(closePrice))
                                         cash += (shares * closePrice)
                                         connector.modifyCash(connection, cash, 1)
@@ -91,7 +91,7 @@ if __name__ == "__main__":
                                         connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], 0, workingSet[currentBar]['barType'], 'hammerSellAtLossStop', connection)
 
 
-                        elif buyClose <= workingSet[currentBar]['timestamp'].time() and currentPosition == 1:
+                                    elif buyClose <= workingSet[currentBar]['timestamp'].time() and currentPosition == 1:
                                         alltrades.append(str((workingSet[currentBar])) + ' Sell at: ' + str(closePrice))
                                         cash += (shares * closePrice)
                                         connector.modifyCash(connection, cash, 1)
