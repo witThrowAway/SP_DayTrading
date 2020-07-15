@@ -41,13 +41,13 @@ if __name__ == '__main__':
             while df.empty and tryCounter < 10:
                 df = api.get_barset(unscreened_stocks[count]["symbol"], '1Min', limit=1, after=window).df
                 tryCounter +=1
-            count += 1
             if not df.empty:
                 # symbol - high - low - open - close - volume - shareCount - timestamp - barType
                 try:
                     symbol = unscreened_stocks[count]["symbol"]
-                    connector.insertBar(symbol, floaty(df[symbol]['high'][0]), floaty(df[symbol]['low'][0]), floaty(df[symbol]['open'][0]),
-                                floaty(df[symbol]['close'][0]), floaty(df[symbol]['volume'][0]), 1, barType, connection)
+                    count += 1
+                    connector.insertBar(str(symbol), floaty(df[symbol]['high'][0]), floaty(df[symbol]['low'][0]), floaty(df[symbol]['open'][0]),floaty(df[symbol]['close'][0]), floaty(df[symbol]['volume'][0]), 1, 'barType', connection)
+
                 except Exception as e:
                     print(str(e))
 
