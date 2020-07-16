@@ -1,0 +1,113 @@
+import datetime
+import time
+from datetime import time
+import sys
+from numpy import float as floaty
+import numpy as np
+sys.path.append('/home/trade/Desktop/SP_DayTrading/')
+
+import dbConnector as db
+import alpacaDrip as ad
+
+
+def isMorningStar(bar):
+
+    if True == np.where (bar[0]['open'] > bar[1]['open'] and bar[2]['open'] < bar[1]['open'], True,False):
+
+        if True == np.where(bar[0]['volume'] > bar[1]['volume'] and bar[2]['volume'] > bar[1]['volume'], True, False):
+
+            if True == np.where(bar[2]['volume'] >= (.96 * bar[1]['volume']), True, False):
+
+                if True == np.where(bar[0]['low'] >= bar[1]['low'] and bar[2]['low'] < bar[0]['low'], True, False):
+
+                    return True
+
+if __name__ == "__main__":
+
+        #start this strategy at 9:35 AM
+            #start_time = time()
+            if datetime.datetime.now().time() > datetime.time(9,35) and datetime.datetime.now().time() < datetime.time(15,00):
+                print("here")
+                # Connect to the database
+                connector = db.dbConnector()
+                connection = connector.createConnection()
+
+                #create time window (5min intervals updated each minute)
+                now = datetime.datetime.now()
+                window = datetime.datetime.now() - datetime.timedelta(minutes=3)
+                symbols = connector.getMentions(connection)
+                strategy = ad.Strategy()
+                ############ make value dynamic
+                #cash = 25000
+                cash = connector.getCash(connection,8)
+                cash = cash[0]['cash']
+                ############
+
+                #barNumber = 0
+                buyPrice = 0
+                shares = 0
+                takeProfitPercent = 1.03
+                lossProfitPercent = .97
+                maxPosition = cash * .1
+                buyClose = time(15,00,00)
+                alltrades = []
+
+                takeProfit = floaty()
+                lossProfit = floaty()
+                for x in symbols[0:65]:
+
+                    workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
+
+
+
+                    if len(workingSet) == 3:
+                        #print(workingSet)
+                        currentBar = len(workingSet)-1
+                        #print(workingSet[0]['close'])
+
+                        currentPosition = connector.getPosition(connection, x['symbol'])
+
+                        if len(currentPosition) == 0:
+                            currentPosition = 0
+                        else:
+                            currentPosition = currentPosition[0]['position']
+                        closePrice = workingSet[currentBar]['close']
+
+                        if isMorningStar(workingSet):
+                                    print("buy")
+                                    buyPrice = workingSet[currentBar]['close']
+                                    shares = int(maxPosition / closePrice)
+                                    cash = cash - shares * closePrice
+                                    connector.modifyCash(connection, cash, 8)
+                                    takeProfit = takeProfitPercent * buyPrice
+                                    lossProfit = lossProfitPercent * buyPrice
+                                    connector.insertPosition(connection,workingSet[currentBar]['symbol'])
+                                    connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], 0, workingSet[currentBar]['barType'], 'morningStarBuy', connection)
+
+
+                        if currentPosition == 1:
+                                    if closePrice >= takeProfit:
+                                        if (buyPrice < closePrice):
+                                            cash += (shares * closePrice)
+                                            connector.modifyCash(connection, cash, 8)
+                                            connector.modifyPosition(connection,workingSet[currentBar]['symbol'])
+                                            connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], 0, workingSet[currentBar]['barType'], 'morningStarSellAtTakeProfit', connection)
+
+
+
+                                    elif closePrice <= lossProfit:
+                                        cash += (shares * closePrice)
+                                        connector.modifyCash(connection, cash, 8)
+                                        connector.modifyPosition(connection,workingSet['symbol'])
+                                        connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], 0, workingSet[currentBar]['barType'], 'morningStarSellAtLossStop', connection)
+
+
+                                    elif buyClose <= workingSet[currentBar]['timestamp'].time() and currentPosition == 1:
+                                        cash += (shares * closePrice)
+                                        connector.modifyCash(connection, cash, 8)
+                                        connector.modifyPosition(connection,workingSet[currentBar]['symbol'])
+                                        connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], 0, workingSet[currentBar]['barType'], 'morningStarSellAtBuyClose', connection)
+
+            #print("--- %s seconds ---" % (time() - start_time))
+
+
