@@ -59,11 +59,10 @@ if __name__ == "__main__":
                         closePrice = workingSet[currentBar]['close']
                         if strategy.isHammerBar(workingSet[currentBar]) and sma < 0:
                                     print("buy")
-                                    alltrades.append(str((x[currentBar])) + ' Buy at: ' + str(closePrice))
-                                    buyPrice = x[currentBar]['close']
+                                    buyPrice = workingSet[currentBar]['close']
                                     shares = int(maxPosition / closePrice)
                                     cash = cash - shares * closePrice
-                                    connector.modifyCash(connection, cash, 1)
+                                    connector.modifyCash(connection, cash, 8)
                                     takeProfit = takeProfitPercent * buyPrice
                                     lossProfit = lossProfitPercent * buyPrice
                                     connector.insertPosition(connection,workingSet[currentBar]['symbol'])
@@ -73,30 +72,24 @@ if __name__ == "__main__":
                         if currentPosition == 1:
                                     if closePrice >= takeProfit:
                                         if (buyPrice < closePrice):
-                                            alltrades.append(str((x[currentBar])) + ' Sell at: ' + str(closePrice))
                                             cash += (shares * closePrice)
-                                            connector.modifyCash(connection, cash, 1)
-                                            print(alltrades[len(alltrades)-1])
+                                            connector.modifyCash(connection, cash, 8)
                                             connector.modifyPosition(connection,workingSet[currentBar]['symbol'])
                                             connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], 0, workingSet[currentBar]['barType'], 'hammerSellAtTakeProfit', connection)
 
 
 
                                     elif closePrice <= lossProfit:
-                                        alltrades.append(str((x[currentBar])) + ' Sell at: ' + str(closePrice))
                                         cash += (shares * closePrice)
-                                        connector.modifyCash(connection, cash, 1)
-                                        connector.modifyPosition(connection,x['symbol'])
-                                        print(alltrades[len(alltrades)-1])
+                                        connector.modifyCash(connection, cash, 8)
+                                        connector.modifyPosition(connection,workingSet['symbol'])
                                         connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], 0, workingSet[currentBar]['barType'], 'hammerSellAtLossStop', connection)
 
 
                                     elif buyClose <= workingSet[currentBar]['timestamp'].time() and currentPosition == 1:
-                                        alltrades.append(str((workingSet[currentBar])) + ' Sell at: ' + str(closePrice))
                                         cash += (shares * closePrice)
-                                        connector.modifyCash(connection, cash, 1)
+                                        connector.modifyCash(connection, cash, 8)
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'])
-                                        print(alltrades[len(alltrades)-1])
                                         connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], 0, workingSet[currentBar]['barType'], 'hammerSellAtBuyClose', connection)
 
             #print("--- %s seconds ---" % (time() - start_time))
