@@ -28,7 +28,7 @@ if __name__ == "__main__":
                 strategy = ad.Strategy()
                 ############ make value dynamic
                 #cash = 25000
-                cash = connector.getCash(connection,9)
+                cash = connector.getCash(connection,8)
                 cash = cash[0]['cash']
                 ############
                 sma = 0
