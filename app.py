@@ -1,22 +1,11 @@
 import alpaca_trade_api as tradeapi
-import json
-import candleGraph
-import io
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
-import ta
-import pandas as pd
-import time
-import datetime
-from numpy import float as floaty
+
 from flask import Flask, render_template, request, flash, get_flashed_messages
-from flask_table import Table, Col
+
 import dbConnector as db
 import backtesting
-import sys
-sys.path.append('/Users/ryangould/Downloads/SP_DayTrading/.idea/Entities')
-import scrapedStocks
-import scrapedStocksTable
+
+
 
 
 #Global Variables
