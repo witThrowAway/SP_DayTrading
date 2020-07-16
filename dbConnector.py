@@ -187,3 +187,9 @@ class dbConnector:
             return False
         finally:
             return result
+    def getSharesFromLastTradeOnSymbol(self, connection, symbol):
+            with connection.cursor() as cursor:
+                sql = "SELECT shareCount FROM `Trades` WHERE `symbol` = %s ORDER BY `timestamp` DESC"
+                cursor.execute(sql,symbol)
+                result = cursor.fetchall()
+            return result
