@@ -144,6 +144,7 @@ class dbConnector:
         with connection.cursor() as cursor:
             sql = "INSERT INTO `currentPositions` (`symbol`, `position`) VALUES (%s, 1)"
             cursor.execute(sql, symbol)
+            connection.commit()
         return True
     def modifyPosition(self, connection, symbol):
         with connection.cursor() as cursor:
@@ -185,4 +186,10 @@ class dbConnector:
             print(str(e))
             return False
         finally:
+            return result
+    def getSharesFromLastTradeOnSymbol(self, connection, symbol):
+            with connection.cursor() as cursor:
+                sql = "SELECT shareCount FROM `Trades` WHERE `symbol` = %s ORDER BY `timestamp` DESC"
+                cursor.execute(sql,symbol)
+                result = cursor.fetchall()
             return result

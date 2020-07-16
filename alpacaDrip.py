@@ -14,7 +14,7 @@ class Strategy:
     def isHammerBar(self, bar):
         if True == np.where(bar['open'] <= bar['high'],True,False):
             if True == np.where(bar['open'] > bar['close'],True,False):
-                if True == np.where(bar['low'] * 1.035 < bar['close'],True,False):
+                if True == np.where(bar['low'] * 1.025 < bar['close'],True,False):
                         return True
         else:
             return False
