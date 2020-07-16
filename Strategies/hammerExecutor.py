@@ -66,7 +66,7 @@ if __name__ == "__main__":
                                     takeProfit = takeProfitPercent * buyPrice
                                     lossProfit = lossProfitPercent * buyPrice
                                     connector.insertPosition(connection,workingSet[currentBar]['symbol'])
-                                    connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], 0, workingSet[currentBar]['barType'], 'hammerBuy', connection)
+                                    connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerBuy', connection)
 
 
                         if currentPosition == 1:
@@ -75,7 +75,7 @@ if __name__ == "__main__":
                                             cash += (shares * closePrice)
                                             connector.modifyCash(connection, cash, 8)
                                             connector.modifyPosition(connection,workingSet[currentBar]['symbol'])
-                                            connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], 0, workingSet[currentBar]['barType'], 'hammerSellAtTakeProfit', connection)
+                                            connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerSellAtTakeProfit', connection)
 
 
 
@@ -83,13 +83,13 @@ if __name__ == "__main__":
                                         cash += (shares * closePrice)
                                         connector.modifyCash(connection, cash, 8)
                                         connector.modifyPosition(connection,workingSet['symbol'])
-                                        connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], 0, workingSet[currentBar]['barType'], 'hammerSellAtLossStop', connection)
+                                        connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerSellAtLossStop', connection)
 
 
                                     elif buyClose <= workingSet[currentBar]['timestamp'].time() and currentPosition == 1:
                                         cash += (shares * closePrice)
                                         connector.modifyCash(connection, cash, 8)
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'])
-                                        connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], 0, workingSet[currentBar]['barType'], 'hammerSellAtBuyClose', connection)
+                                        connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerSellAtBuyClose', connection)
 
             #print("--- %s seconds ---" % (time() - start_time))
