@@ -144,6 +144,7 @@ class dbConnector:
         with connection.cursor() as cursor:
             sql = "INSERT INTO `currentPositions` (`symbol`, `position`) VALUES (%s, 1)"
             cursor.execute(sql, symbol)
+            connection.commit()
         return True
     def modifyPosition(self, connection, symbol):
         with connection.cursor() as cursor:
