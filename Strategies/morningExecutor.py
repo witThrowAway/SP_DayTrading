@@ -74,7 +74,7 @@ if __name__ == "__main__":
                         closePrice = workingSet[currentBar]['close']
 
                         if isMorningStar(workingSet) and currentPosition != 1:
-                                    print("buy")
+                                    print("mbuy")
                                     buyPrice = workingSet[currentBar]['close']
                                     shares = int(maxPosition / closePrice)
                                     cash = cash - shares * closePrice
@@ -88,7 +88,7 @@ if __name__ == "__main__":
                         if currentPosition == 1:
                                     if closePrice >= takeProfit:
                                         if (buyPrice < closePrice):
-
+                                            print("msell")
                                             uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'])
 
                                             shares = uncleanShareCount[0]['shareCount']
@@ -101,7 +101,7 @@ if __name__ == "__main__":
 
 
                                     elif closePrice <= lossProfit:
-
+                                        print("msell")
                                         uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'])
                                         shares = uncleanShareCount[0]['shareCount']
 
@@ -111,8 +111,8 @@ if __name__ == "__main__":
                                         connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'morningStarSellAtLossStop', connection)
 
 
-                                    elif buyClose <= workingSet[currentBar]['timestamp'].time() and currentPosition == 1:
-
+                                    elif buyClose <= workingSet[currentBar]['timestamp'].time():
+                                        print("msell")
                                         uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'])
                                         shares = uncleanShareCount[0]['shareCount']
                                         cash += (shares * closePrice)

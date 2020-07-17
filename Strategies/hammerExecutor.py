@@ -57,8 +57,8 @@ if __name__ == "__main__":
                         else:
                             currentPosition = currentPosition[0]['position']
                         closePrice = workingSet[currentBar]['close']
-                        if strategy.isHammerBar(workingSet[currentBar]) and sma < 0:
-                                    print("buy")
+                        if strategy.isHammerBar(workingSet[currentBar]) and sma < 0 and currentPosition != 1:
+                                    print("hbuy")
                                     buyPrice = workingSet[currentBar]['close']
                                     shares = int(maxPosition / closePrice)
                                     cash = cash - shares * closePrice
@@ -72,7 +72,7 @@ if __name__ == "__main__":
                         if currentPosition == 1:
                                     if closePrice >= takeProfit:
                                         if (buyPrice < closePrice):
-                                            print('sell')
+                                            print('hsell')
                                             uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                             shares = uncleanShareCount[0]['shareCount']
                                             cash += (shares * closePrice)
@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
 
                                     elif closePrice <= lossProfit:
-                                        print('sell')
+                                        print('hsell')
                                         uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                         shares = uncleanShareCount[0]['shareCount']
                                         cash += (shares * closePrice)
@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
 
                                     elif buyClose <= workingSet[currentBar]['timestamp'].time() and currentPosition == 1:
-                                        print('sell')
+                                        print('hsell')
                                         uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                         shares = uncleanShareCount[0]['shareCount']
                                         cash += (shares * closePrice)
