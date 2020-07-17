@@ -93,7 +93,7 @@ if __name__ == "__main__":
                                     if closePrice >= takeProfit:
                                         if (buyPrice < closePrice):
                                             print("msell")
-                                            uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'])
+                                            uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarBuy')
 
                                             shares = uncleanShareCount[0]['shareCount']
 
@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
                                     elif closePrice <= lossProfit:
                                         print("msell")
-                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'])
+                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarBuy')
                                         shares = uncleanShareCount[0]['shareCount']
 
                                         cash += (shares * closePrice)
@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
                                     elif buyClose <= workingSet[currentBar]['timestamp'].time():
                                         print("msell")
-                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'])
+                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarBuy')
                                         shares = uncleanShareCount[0]['shareCount']
                                         cash += (shares * closePrice)
                                         connector.modifyCash(connection, cash, 8)
