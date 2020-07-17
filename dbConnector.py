@@ -146,10 +146,10 @@ class dbConnector:
             cursor.execute(sql, (symbol, algo))
             connection.commit()
         return True
-    def modifyPosition(self, connection, symbol, algo):
+    def modifyPosition(self, connection, symbol,position, algo):
         with connection.cursor() as cursor:
-            sql = "UPDATE `currentPositions` SET `position` = 0 WHERE `symbol` = %s AND `algo` = %s"
-            cursor.execute(sql, (symbol, algo))
+            sql = "UPDATE `currentPositions` SET `position` = %s WHERE `symbol` = %s AND `algo` = %s"
+            cursor.execute(sql, (symbol, position, algo))
             connection.commit()
         return True
     def getPosition(self,connection,symbol, algo):
