@@ -56,9 +56,7 @@ if __name__ == "__main__":
                 lossProfit = floaty()
                 for x in symbols[0:65]:
                     workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
-                    targets = connector.getLossProfitFromLastTradeOnSymbol(connection, x['symbol'], 'morningStarBuy')
-                    takeProfit = targets[0]['takeProfit']
-                    lossProfit = targets[0]['takeLoss']
+
                     if len(workingSet) == 3:
                         #print(workingSet)
                         currentBar = len(workingSet)-1
@@ -70,6 +68,10 @@ if __name__ == "__main__":
                             currentPosition = 0
                         else:
                             currentPosition = currentPosition[0]['position']
+                            targets = connector.getLossProfitFromLastTradeOnSymbol(connection, x['symbol'], 'morningStarBuy')
+                            if targets:
+                                takeProfit = targets[0]['takeProfit']
+                                lossProfit = targets[0]['takeLoss']
                             existingPosition = 1
                         closePrice = workingSet[currentBar]['close']
 
