@@ -30,13 +30,13 @@ class dbConnector:
             return False
         finally:
             return True
-    def insertTrade(self, symbol, high, low, open, close, volume, shareCount, barType, tradeType, connection):
+    def insertTrade(self, symbol, high, low, open, close, volume, shareCount, barType, tradeType, connection, takeProfit, takeLoss):
         try:
             with connection.cursor() as cursor:
                 # Create a new record
 
-                sql = "INSERT INTO `Trades` (`symbol`, `high`, `low`, `open`, `close`, `volume`, `shareCount`, `barType`, `tradeType`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-                cursor.execute(sql, (symbol, high, low, open, close, volume, shareCount, barType, tradeType))
+                sql = "INSERT INTO `Trades` (`symbol`, `high`, `low`, `open`, `close`, `volume`, `shareCount`, `barType`, `tradeType`, `takeProfit`, `takeLoss`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                cursor.execute(sql, (symbol, high, low, open, close, volume, shareCount, barType, tradeType, takeProfit, takeLoss))
 
                 # connection is not autocommit by default. So you must commit to save
                 # your changes.
@@ -193,3 +193,9 @@ class dbConnector:
                 cursor.execute(sql,(symbol,tradeType))
                 result = cursor.fetchall()
             return result
+    def getLossProfitFromLastTradeOnSymbol(self, connection, symbol, tradeType):
+        with connection.cursor() as cursor:
+            sql = "SELECT takeProfit, takeLoss FROM `Trades` WHERE `symbol` = %s AND `tradeType` = %s ORDER BY `timestamp` DESC"
+            cursor.execute(sql,(symbol,tradeType))
+            result = cursor.fetchall()
+        return result
