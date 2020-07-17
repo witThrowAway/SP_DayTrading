@@ -140,22 +140,22 @@ class dbConnector:
             sql = "Delete FROM `Mentions`"
             cursor.execute(sql)
         return True
-    def insertPosition(self, connection, symbol):
+    def insertPosition(self, connection, symbol, algo):
         with connection.cursor() as cursor:
-            sql = "INSERT INTO `currentPositions` (`symbol`, `position`) VALUES (%s, 1)"
-            cursor.execute(sql, symbol)
+            sql = "INSERT INTO `currentPositions` (`symbol`, `position`, `algo`) VALUES (%s, 1, %s)"
+            cursor.execute(sql, (symbol, algo))
             connection.commit()
         return True
-    def modifyPosition(self, connection, symbol):
+    def modifyPosition(self, connection, symbol, algo):
         with connection.cursor() as cursor:
-            sql = "UPDATE `currentPositions` SET `position` = 0 WHERE `symbol` = %s"
-            cursor.execute(sql, (symbol))
+            sql = "UPDATE `currentPositions` SET `position` = 0 WHERE `symbol` = %s AND `algo` = %s"
+            cursor.execute(sql, (symbol, algo))
             connection.commit()
         return True
-    def getPosition(self,connection,symbol):
+    def getPosition(self,connection,symbol, algo):
         with connection.cursor() as cursor:
-            sql = "SELECT position FROM `currentPositions` WHERE `symbol` = %s"
-            cursor.execute(sql,symbol)
+            sql = "SELECT position FROM `currentPositions` WHERE `symbol` = %s AND `algo` = %s"
+            cursor.execute(sql,(symbol, algo))
             result = cursor.fetchall()
         return result
     def insertCash(self, connection, value):
@@ -187,9 +187,9 @@ class dbConnector:
             return False
         finally:
             return result
-    def getSharesFromLastTradeOnSymbol(self, connection, symbol):
+    def getSharesFromLastTradeOnSymbol(self, connection, symbol, tradeType):
             with connection.cursor() as cursor:
-                sql = "SELECT shareCount FROM `Trades` WHERE `symbol` = %s ORDER BY `timestamp` DESC"
-                cursor.execute(sql,symbol)
+                sql = "SELECT shareCount FROM `Trades` WHERE `symbol` = %s AND `tradeType` = %s ORDER BY `timestamp` DESC"
+                cursor.execute(sql,(symbol,tradeType))
                 result = cursor.fetchall()
             return result
