@@ -9,10 +9,10 @@ import backtesting
 
 
 #Global Variables
-ALPACA_KEY_ID = 'PKFVIO2UTE0RQCA10VY2'
-ALPACA_SECRET_KEY = r'UbQc/3SLmA5wv4EbesUh0t5dbUBdLAl/OtaEurrN'
-SECRET_KEY = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
+ALPACA_KEY_ID = 'PK3VZLXGJAE5FPVLWCOU'
+ALPACA_SECRET_KEY = r'NtLnmeY6PtUpPXD2kGblhezLg/6f4lHqEcIqrR/3'
 
+SECRET_KEY = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
 
 
 app = Flask(__name__)
@@ -49,6 +49,12 @@ def dashboard():
         for x in scrapedStocks:
             symbols.append(x['symbol'])
 
+        this = datetime.datetime.today()
+        time = str(this.year) + "-" + str(this.month) + "-" + str(this.day) + " " + str(datetime.time(9,35))
+        day = str(this.year) + "-" + str(this.month) + "-" + str(this.day)
+        trades = connector.getTradeRecents(connection, time)
+        stonks = connector.getBarsByTime(connection, time)
+        results = connector.getResultsByDate(connection, day)
     if request.method == 'POST':
         symbol = request.form.get('symbol')
 
@@ -58,7 +64,7 @@ def dashboard():
         print(df)
         return render_template('graph.html', df = df.to_json(), symbol=symbol)
 
-    return render_template('dashboard.html', symbols = symbols)
+    return render_template('dashboard_copy.html', symbols = symbols, trades = trades, stonks = stonks, results = results)
 
 @app.route("/graph" , methods=['GET','POST'])
 def test():

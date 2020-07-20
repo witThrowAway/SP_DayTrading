@@ -31,7 +31,7 @@ class dbConnector:
         finally:
             return True
     def insertTrade(self, symbol, high, low, open, close, volume, shareCount, barType, tradeType, connection, takeProfit, takeLoss):
-        try:
+        #try:
             with connection.cursor() as cursor:
                 # Create a new record
 
@@ -41,10 +41,10 @@ class dbConnector:
                 # connection is not autocommit by default. So you must commit to save
                 # your changes.
                 connection.commit()
-        except ConnectionError:
-            print("Connection Error")
-            return False
-        finally:
+        #except ConnectionError:
+         #   print("Connection Error")
+          #  return False
+        #finally:
             return True
     def insertMention(self, symbol, connection):
         try:
@@ -81,7 +81,7 @@ class dbConnector:
 
     def getBarsByTime(self, connection, timestamp):
         with connection.cursor() as cursor:
-            sql = "SELECT * FROM `Stonks` WHERE `timestamp`=%s"
+            sql = "SELECT * FROM `Stonks` WHERE `timestamp` > %s"
             cursor.execute(sql, (timestamp))
             result = connection.cursor.fetchall()
         return result
@@ -105,14 +105,20 @@ class dbConnector:
         return result
     def getTradeByTradeType(self, connection, tradeType):
         with connection.cursor() as cursor:
-            sql = "SELECT * FROM `Trade` WHERE `tradeType`=%s"
+            sql = "SELECT * FROM `Trades` WHERE `tradeType`=%s"
             cursor.execute(sql, (tradeType))
             result = cursor.fetchall()
         return result
     def getTradeBySymbol(self, connection, symbol):
         with connection.cursor() as cursor:
-            sql = "SELECT * FROM `Trade` WHERE `symbol`=%s"
+            sql = "SELECT * FROM `Trades` WHERE `symbol`=%s"
             cursor.execute(sql, (symbol))
+            result = cursor.fetchall()
+        return result
+    def getTradeRecents(self, connection, time):
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM `Trades` WHERE `timestamp` > %s"
+            cursor.execute(sql, (time))
             result = cursor.fetchall()
         return result
     def getMentions(self, connection):
@@ -170,9 +176,15 @@ class dbConnector:
         finally:
             return True
 
-    def modifyCash(self, connection, value, id):
+    def addCash(self, connection, value, id):
         with connection.cursor() as cursor:
             sql = "UPDATE `currentCash` SET `cash` = `cash` + %s WHERE `id` = %s"
+            cursor.execute(sql, (value,id))
+            connection.commit()
+        return True
+    def subtractCash(self, connection, value, id):
+        with connection.cursor() as cursor:
+            sql = "UPDATE `currentCash` SET `cash` = `cash` - %s WHERE `id` = %s"
             cursor.execute(sql, (value,id))
             connection.commit()
         return True
@@ -199,3 +211,32 @@ class dbConnector:
             cursor.execute(sql,(symbol,tradeType))
             result = cursor.fetchall()
         return result
+    def setStartCash(self, connection, cash, date):
+        with connection.cursor() as cursor:
+            sql = "INSERT INTO `Results` (`startCash`, `date`) VALUES (%s, %s)"
+            cursor.execute(sql, (cash,date))
+            connection.commit()
+        return True
+    def setEndCash(self, connection, cash, date):
+        with connection.cursor() as cursor:
+            sql = "UPDATE `Results` SET `endCash` = %s WHERE `date` = %s"
+            cursor.execute(sql, (cash,date))
+            connection.commit()
+        return True
+    def setResultCash(self, connection):
+        with connection.cursor() as cursor:
+            sql = "UPDATE `Results` SET `resultCash` = `endCash` - `startCash`"
+            cursor.execute(sql)
+            connection.commit()
+        return True
+    def getResultByDate(self,connection, date):
+        try:
+            with connection.cursor() as cursor:
+                sql = "SELECT startCash, endCash, resultCash FROM `Results` WHERE `date` = %s"
+                cursor.execute(sql,date)
+                result = cursor.fetchall()
+        except Exception as e:
+            print(str(e))
+            return False
+        finally:
+            return result

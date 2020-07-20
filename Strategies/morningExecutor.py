@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
         #start this strategy at 9:35 AM
             #start_time = time()
-            if datetime.datetime.now().time() > datetime.time(9,35) and datetime.datetime.now().time() < datetime.time(15,00):
+            if datetime.datetime.now().time() > datetime.time(9,35):
                 print("here")
                 # Connect to the database
                 connector = db.dbConnector()
@@ -49,7 +49,7 @@ if __name__ == "__main__":
                 takeProfitPercent = 1.03
                 lossProfitPercent = .97
                 maxPosition = cash * .1
-                buyClose = time(15,00,00)
+                buyClose = datetime.time(15,00)
                 alltrades = []
 
                 takeProfit = floaty()
@@ -76,7 +76,7 @@ if __name__ == "__main__":
                             existingPosition = 1
                         closePrice = workingSet[currentBar]['close']
 
-                        if isMorningStar(workingSet) and currentPosition != 1:
+                        if isMorningStar(workingSet) and currentPosition != 1 and buyClose > workingSet[currentBar]['timestamp'].time():
                                     print("mbuy")
                                     buyPrice = workingSet[currentBar]['close']
                                     shares = int(maxPosition / closePrice)
