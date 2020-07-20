@@ -54,8 +54,11 @@ if __name__ == "__main__":
 
                 takeProfit = floaty()
                 lossProfit = floaty()
-                for x in symbols[0:65]:
+                for x in symbols[0:1]:
                     workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
+                    workingSet = morningtestDf = [{'id': 958736, 'symbol': 'SIEN', 'high': 4.635, 'low': 4.625, 'open': 4.63, 'close': 4.635, 'volume': 812, 'shareCount': 1, 'timestamp': datetime.datetime(2020, 7, 16, 10, 9, 9), 'barType': 'barType'},
+                                                  {'id': 958801, 'symbol': 'SIEN', 'high': 4.58, 'low': 4.58, 'open': 4.58, 'close': 4.58, 'volume': 100, 'shareCount': 1, 'timestamp': datetime.datetime(2020, 7, 16, 10, 10, 10), 'barType': 'barType'},
+                                                  {'id': 958866, 'symbol': 'SIEN', 'high': 4.58, 'low': 4.57, 'open': 4.57, 'close': 4.58, 'volume': 500, 'shareCount': 1, 'timestamp': datetime.datetime(2020, 7, 16, 10, 11, 8), 'barType': 'barType'}]
 
                     if len(workingSet) == 3:
                         #print(workingSet)
@@ -83,7 +86,7 @@ if __name__ == "__main__":
                                     connector.modifyCash(connection, cash, 8)
                                     takeProfit = takeProfitPercent * buyPrice
                                     lossProfit = lossProfitPercent * buyPrice
-                                    if existingPosition == 1:
+                                    if existingPosition == 0:
                                         connector.insertPosition(connection,workingSet[currentBar]['symbol'], 'morningStar')
                                     else:
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'], 1, 'morningStar')

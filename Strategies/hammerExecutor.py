@@ -73,7 +73,7 @@ if __name__ == "__main__":
                                     connector.modifyCash(connection, cash, 8)
                                     takeProfit = takeProfitPercent * buyPrice
                                     lossProfit = lossProfitPercent * buyPrice
-                                    if existingPosition == 1:
+                                    if existingPosition == 0:
                                         connector.insertPosition(connection,workingSet[currentBar]['symbol'], 'hammer')
                                     else:
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'], 1, 'hammer')
