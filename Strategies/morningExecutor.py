@@ -94,7 +94,7 @@ if __name__ == "__main__":
                         if currentPosition == 1:
                                     if closePrice >= takeProfit:
                                             print("msell")
-                                            uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarSell')
+                                            uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarBuy')
 
                                             shares = uncleanShareCount[0]['shareCount']
 
@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
                                     elif closePrice <= lossProfit:
                                         print("msell")
-                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarSell')
+                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarBuy')
                                         shares = uncleanShareCount[0]['shareCount']
 
                                         cash += (shares * closePrice)
@@ -118,7 +118,7 @@ if __name__ == "__main__":
 
                                     elif buyClose <= workingSet[currentBar]['timestamp'].time():
                                         print("msell")
-                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarSell')
+                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarBuy')
                                         shares = uncleanShareCount[0]['shareCount']
                                         cash += (shares * closePrice)
                                         connector.modifyCash(connection, cash, 8)
