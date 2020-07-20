@@ -54,24 +54,25 @@ if __name__ == "__main__":
 
                 takeProfit = floaty()
                 lossProfit = floaty()
+                symbols = ['WISA']
                 for x in symbols[0:1]:
-                    workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
-                    workingSet = morningtestDf = [{'id': 958736, 'symbol': 'SIEN', 'high': 4.635, 'low': 4.625, 'open': 4.63, 'close': 4.635, 'volume': 812, 'shareCount': 1, 'timestamp': datetime.datetime(2020, 7, 16, 10, 9, 9), 'barType': 'barType'},
-                                                  {'id': 958801, 'symbol': 'SIEN', 'high': 4.58, 'low': 4.58, 'open': 4.58, 'close': 4.58, 'volume': 100, 'shareCount': 1, 'timestamp': datetime.datetime(2020, 7, 16, 10, 10, 10), 'barType': 'barType'},
-                                                  {'id': 958866, 'symbol': 'SIEN', 'high': 4.58, 'low': 4.57, 'open': 4.57, 'close': 4.58, 'volume': 500, 'shareCount': 1, 'timestamp': datetime.datetime(2020, 7, 16, 10, 11, 8), 'barType': 'barType'}]
+                   # workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
+                    workingSet = morningtestDf = [{'id': 958736, 'symbol': 'SIEN', 'high': 1, 'low': 1, 'open': 1, 'close': 1, 'volume': 812, 'shareCount': 1, 'timestamp': datetime.datetime(2020, 7, 16, 10, 9, 9), 'barType': 'barType'},
+                                                  {'id': 958801, 'symbol': 'SIEN', 'high': 1, 'low': 1, 'open': 1, 'close': 1, 'volume': 100, 'shareCount': 1, 'timestamp': datetime.datetime(2020, 7, 16, 10, 10, 10), 'barType': 'barType'},
+                                                  {'id': 958866, 'symbol': 'SIEN', 'high': 1, 'low': 1, 'open': 1, 'close': 2.4823, 'volume': 500, 'shareCount': 1, 'timestamp': datetime.datetime(2020, 7, 16, 10, 11, 8), 'barType': 'barType'}]
 
                     if len(workingSet) == 3:
                         #print(workingSet)
                         currentBar = len(workingSet)-1
                         #print(workingSet[0]['close'])
 
-                        currentPosition = connector.getPosition(connection, x['symbol'],'morningStar')
+                        currentPosition = connector.getPosition(connection, 'WISA','morningStar')
                         existingPosition = 0
                         if len(currentPosition) == 0:
                             currentPosition = 0
                         else:
                             currentPosition = currentPosition[0]['position']
-                            targets = connector.getLossProfitFromLastTradeOnSymbol(connection, x['symbol'], 'morningStarBuy')
+                            targets = connector.getLossProfitFromLastTradeOnSymbol(connection, 'WISA', 'morningStarBuy')
                             if targets:
                                 takeProfit = targets[0]['takeProfit']
                                 lossProfit = targets[0]['takeLoss']
@@ -96,7 +97,7 @@ if __name__ == "__main__":
                         if currentPosition == 1:
                                     if closePrice >= takeProfit:
                                             print("msell")
-                                            uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarBuy')
+                                            uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarSell')
 
                                             shares = uncleanShareCount[0]['shareCount']
 
@@ -109,7 +110,7 @@ if __name__ == "__main__":
 
                                     elif closePrice <= lossProfit:
                                         print("msell")
-                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarBuy')
+                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarSell')
                                         shares = uncleanShareCount[0]['shareCount']
 
                                         cash += (shares * closePrice)
@@ -120,7 +121,7 @@ if __name__ == "__main__":
 
                                     elif buyClose <= workingSet[currentBar]['timestamp'].time():
                                         print("msell")
-                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarBuy')
+                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection,workingSet[currentBar]['symbol'], 'morningStarSell')
                                         shares = uncleanShareCount[0]['shareCount']
                                         cash += (shares * closePrice)
                                         connector.modifyCash(connection, cash, 8)

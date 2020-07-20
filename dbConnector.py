@@ -172,7 +172,7 @@ class dbConnector:
 
     def modifyCash(self, connection, value, id):
         with connection.cursor() as cursor:
-            sql = "UPDATE `currentCash` SET `cash` = %s WHERE `id` = %s"
+            sql = "UPDATE `currentCash` SET `cash` = `cash` + %s WHERE `id` = %s"
             cursor.execute(sql, (value,id))
             connection.commit()
         return True

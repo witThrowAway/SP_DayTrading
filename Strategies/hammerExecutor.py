@@ -84,7 +84,7 @@ if __name__ == "__main__":
                                     if closePrice >= takeProfit:
                                         if (buyPrice < closePrice):
                                             print('hsell')
-                                            uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
+                                            uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerSell')
                                             shares = uncleanShareCount[0]['shareCount']
                                             cash += (shares * closePrice)
                                             connector.modifyCash(connection, cash, 8)
@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
                                     elif closePrice <= lossProfit:
                                         print('hsell')
-                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
+                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerSell')
                                         shares = uncleanShareCount[0]['shareCount']
                                         cash += (shares * closePrice)
                                         connector.modifyCash(connection, cash, 8)
@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
                                     elif buyClose <= workingSet[currentBar]['timestamp'].time() and currentPosition == 1:
                                         print('hsell')
-                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
+                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerSell')
                                         shares = uncleanShareCount[0]['shareCount']
                                         cash += (shares * closePrice)
                                         connector.modifyCash(connection, cash, 8)
