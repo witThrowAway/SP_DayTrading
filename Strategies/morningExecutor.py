@@ -54,25 +54,22 @@ if __name__ == "__main__":
 
                 takeProfit = floaty()
                 lossProfit = floaty()
-                symbols = ['WISA']
-                for x in symbols[0:1]:
-                   # workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
-                    workingSet = morningtestDf = [{'id': 958736, 'symbol': 'SIEN', 'high': 1, 'low': 1, 'open': 1, 'close': 1, 'volume': 812, 'shareCount': 1, 'timestamp': datetime.datetime(2020, 7, 16, 10, 9, 9), 'barType': 'barType'},
-                                                  {'id': 958801, 'symbol': 'SIEN', 'high': 1, 'low': 1, 'open': 1, 'close': 1, 'volume': 100, 'shareCount': 1, 'timestamp': datetime.datetime(2020, 7, 16, 10, 10, 10), 'barType': 'barType'},
-                                                  {'id': 958866, 'symbol': 'SIEN', 'high': 1, 'low': 1, 'open': 1, 'close': 2.4823, 'volume': 500, 'shareCount': 1, 'timestamp': datetime.datetime(2020, 7, 16, 10, 11, 8), 'barType': 'barType'}]
+                for x in symbols[0:65]:
+                    workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
+
 
                     if len(workingSet) == 3:
                         #print(workingSet)
                         currentBar = len(workingSet)-1
                         #print(workingSet[0]['close'])
 
-                        currentPosition = connector.getPosition(connection, 'WISA','morningStar')
+                        currentPosition = connector.getPosition(connection, x['symbol'],'morningStar')
                         existingPosition = 0
                         if len(currentPosition) == 0:
                             currentPosition = 0
                         else:
                             currentPosition = currentPosition[0]['position']
-                            targets = connector.getLossProfitFromLastTradeOnSymbol(connection, 'WISA', 'morningStarBuy')
+                            targets = connector.getLossProfitFromLastTradeOnSymbol(connection, x['symbol'], 'morningStarBuy')
                             if targets:
                                 takeProfit = targets[0]['takeProfit']
                                 lossProfit = targets[0]['takeLoss']
