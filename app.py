@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, flash, get_flashed_messages
 
 import dbConnector as db
 import backtesting
+import datetime
 
 
 
@@ -54,6 +55,7 @@ def dashboard():
         day = str(this.year) + "-" + str(this.month) + "-" + str(this.day)
         trades = connector.getTradeRecents(connection, time)
         stonks = connector.getBarsByTime(connection, time)
+        stonks = stonks[0:25]
         results = connector.getResultsByDate(connection, day)
     if request.method == 'POST':
         symbol = request.form.get('symbol')
