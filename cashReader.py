@@ -6,6 +6,7 @@ if __name__ == "__main__":
     connection = connector.createConnection()
 
     cash = connector.getCash(connection, 8)
+    cash = cash[0]['cash']
     this = datetime.datetime.today()
     time = str(this.year) + "-" + str(this.month) + "-" + str(this.day)
 
