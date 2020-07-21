@@ -112,7 +112,7 @@ if __name__ == "__main__":
 
                                         cashChange = (shares * closePrice)
                                         connector.addCash(connection, cashChange, 8)
-                                        connector.modifyPosition(connection,workingSet['symbol'],0,'morningStar')
+                                        connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'morningStar')
                                         connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'morningStarSellAtLossStop', connection,0,0)
 
 
