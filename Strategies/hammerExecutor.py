@@ -70,7 +70,7 @@ if __name__ == "__main__":
                                     print("hbuy")
                                     buyPrice = workingSet[currentBar]['close']
                                     shares = int(maxPosition / closePrice)
-                                    cash = cash - shares * closePrice
+                                    cash = shares * closePrice
                                     connector.subtractCash(connection, cash, 8)
                                     takeProfit = takeProfitPercent * buyPrice
                                     lossProfit = lossProfitPercent * buyPrice
@@ -87,8 +87,8 @@ if __name__ == "__main__":
                                             print('hsell')
                                             uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                             shares = uncleanShareCount[0]['shareCount']
-                                            cash += (shares * closePrice)
-                                            connector.addCash(connection, cash, 8)
+                                            cashChange = (shares * closePrice)
+                                            connector.addCash(connection, cashChange, 8)
                                             connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
                                             print("modifyPosition")
                                             connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerSellAtTakeProfit', connection,0,0)
@@ -99,8 +99,8 @@ if __name__ == "__main__":
                                         print('hsell')
                                         uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                         shares = uncleanShareCount[0]['shareCount']
-                                        cash += (shares * closePrice)
-                                        connector.addCash(connection, cash, 8)
+                                        cashChange = (shares * closePrice)
+                                        connector.addCash(connection, cashChange, 8)
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
                                         print("modifyPosition")
                                         connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerSellAtLossStop', connection,0,0)
@@ -110,8 +110,8 @@ if __name__ == "__main__":
                                         print('hsell')
                                         uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                         shares = uncleanShareCount[0]['shareCount']
-                                        cash += (shares * closePrice)
-                                        connector.addCash(connection, cash, 8)
+                                        cashChange = (shares * closePrice)
+                                        connector.addCash(connection, cashChange, 8)
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
                                         connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerSellAtBuyClose', connection, 0,0)
 
