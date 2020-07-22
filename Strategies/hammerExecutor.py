@@ -32,13 +32,13 @@ if __name__ == "__main__":
                 cash = cash[0]['cash']
                 ############
                 sma = 0
-                #barNumber = 0
                 buyPrice = 0
                 shares = 0
                 takeProfitPercent = 1.06
                 lossProfitPercent = .96
                 maxPosition = cash * .1
-                buyClose = datetime.time(15,00)
+                buyClose = datetime.time(12,00)
+                marketClose = datetime.time(15,30)
                 alltrades = []
 
                 takeProfit = floaty()
@@ -106,7 +106,7 @@ if __name__ == "__main__":
                                         connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerSellAtLossStop', connection,0,0)
 
 
-                                    elif buyClose <= workingSet[currentBar]['timestamp'].time() and currentPosition == 1:
+                                    elif buyClose <= workingSet[currentBar]['timestamp'].time() and closePrice >= (takeProfit * lossProfit):
                                         print('hsell')
                                         uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                         shares = uncleanShareCount[0]['shareCount']
@@ -115,4 +115,12 @@ if __name__ == "__main__":
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
                                         connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerSellAtBuyClose', connection, 0,0)
 
+                                    elif marketClose <= workingSet[currentBar]['timestamp'].time():
+                                        print('hsell')
+                                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
+                                        shares = uncleanShareCount[0]['shareCount']
+                                        cashChange = (shares * closePrice)
+                                        connector.addCash(connection, cashChange, 8)
+                                        connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
+                                        connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerSellAtMarketClose', connection, 0,0)
             #print("--- %s seconds ---" % (time() - start_time))
