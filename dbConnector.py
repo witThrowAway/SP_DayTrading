@@ -83,7 +83,7 @@ class dbConnector:
         with connection.cursor() as cursor:
             sql = "SELECT * FROM `Stonks` WHERE `timestamp` > %s"
             cursor.execute(sql, (timestamp))
-            result = connection.cursor.fetchall()
+            result = cursor.fetchall()
         return result
     def getBarsByTimeWindow(self, connection, start, end, symbol):
         with connection.cursor() as cursor:
@@ -229,11 +229,22 @@ class dbConnector:
             cursor.execute(sql)
             connection.commit()
         return True
-    def getResultByDate(self,connection, date):
+    def getResultsByDate(self,connection, date):
         try:
             with connection.cursor() as cursor:
-                sql = "SELECT startCash, endCash, resultCash FROM `Results` WHERE `date` = %s"
+                sql = "SELECT startCash, endCash, resultCash, date FROM `Results` WHERE `date` = %s"
                 cursor.execute(sql,date)
+                result = cursor.fetchall()
+        except Exception as e:
+            print(str(e))
+            return False
+        finally:
+            return result
+    def getTradesAlgoAndDate(self,connection, tradeType1, tradeType2, tradeType3, tradeType4, tradeType5, tradeType6):
+        try:
+            with connection.cursor() as cursor:
+                sql = "SELECT symbol, close, tradeType, timestamp FROM `Trades` WHERE DATE(`timestamp`) > CURDATE() - INTERVAL 1 DAY and (tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s)"
+                cursor.execute(sql,(tradeType1,tradeType2,tradeType3,tradeType4, tradeType5, tradeType6))
                 result = cursor.fetchall()
         except Exception as e:
             print(str(e))

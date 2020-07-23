@@ -67,10 +67,10 @@ if __name__ == "__main__":
 
                         closePrice = workingSet[currentBar]['close']
                         if strategy.isHammerBar(workingSet[currentBar]) and sma < 0 and currentPosition != 1 and buyClose > workingSet[currentBar]['timestamp'].time():
-                                    print("hbuy")
                                     buyPrice = workingSet[currentBar]['close']
                                     shares = int(maxPosition / closePrice)
                                     cash = shares * closePrice
+                                    print("-",cash)
                                     connector.subtractCash(connection, cash, 8)
                                     takeProfit = takeProfitPercent * buyPrice
                                     lossProfit = lossProfitPercent * buyPrice
@@ -106,7 +106,7 @@ if __name__ == "__main__":
                                         connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerSellAtLossStop', connection,0,0)
 
 
-                                    elif buyClose <= workingSet[currentBar]['timestamp'].time() and closePrice >= (takeProfit * lossProfit):
+                                    elif buyClose <= workingSet[currentBar]['timestamp'].time() and closePrice >= (takeProfit * lossProfitPercent):
                                         print('hsell')
                                         uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                         shares = uncleanShareCount[0]['shareCount']

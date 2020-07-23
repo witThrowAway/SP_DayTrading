@@ -3,7 +3,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
+  <script>
+window.onload = function () {
+var hammerChanges = {{hammerChanges|tojson}};
 
+var chart = new CanvasJS.Chart("chartContainer", {
+	animationEnabled: true,
+	title:{
+		text: "Daily Algorithm Performance"
+	},
+	axisX: {
+		valueFormatString: "HH"
+	},
+	axisY: {
+		title: "Profit Per Share($)",
+		includeZero: false,
+		suffix: " $"
+	},
+	legend:{
+		cursor: "pointer",
+		fontSize: 16,
+		itemclick: toggleDataSeries
+	},
+	toolTip:{
+		shared: true
+	},
+	data: [{
+		name: "HammerTime",
+		type: "spline",
+		yValueFormatString: "#0.##",
+		showInLegend: true,
+		dataPoints: updateChart({{hammerChanges|tojson}})
+	},
+	{
+	    name: "MorningStar",
+		type: "spline",
+		yValueFormatString: "#0.##",
+		showInLegend: true,
+		dataPoints: updateChart({{morningStarChanges|tojson}})
+	},
+	{
+	    name: "SenkouB",
+		type: "spline",
+		yValueFormatString: "#0.##",
+		showInLegend: true,
+		dataPoints: updateChart({{senkouBChanges|tojson}})
+	}]
+});
+
+function updateChart(hammerChanges) {
+    var dataPoints = [];
+    console.log(hammerChanges)
+	for (var i = 0; i < hammerChanges.length; i++) {
+			var timestamp = hammerChanges[i][1];
+			var d = new Date(); // The 0 there is the key, which sets the date to the epoch
+            d.setTime(Date.parse(timestamp));
+            //console.log(parseFloat(hammerChanges[i][0]))
+			dataPoints.push({
+				x: d,
+				y:
+					parseFloat(hammerChanges[i][0])
+			});
+	}
+	return dataPoints
+}
+
+chart.render();
+
+function toggleDataSeries(e){
+	if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+		e.dataSeries.visible = false;
+	}
+	else{
+		e.dataSeries.visible = true;
+	}
+	chart.render();
+}
+
+}
+</script>
 <link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
 
     <style>
@@ -134,16 +212,19 @@ h1 {
 
   <ul class="navbar-nav px-3">
     <li class="nav-item text-nowrap">
-      <a class="nav-link" href="#">Results</a>
+      <a class="nav-link" href="#Results">Results</a>
     </li>
     <li class="nav-item text-nowrap">
-      <a class="nav-link" href="#">Trades</a>
+      <a class="nav-link" href="#trades">Trades</a>
     </li>
     <li class="nav-item text-nowrap">
-      <a class="nav-link" href="#">Performance</a>
+      <a class="nav-link" href="#Performance">Performance</a>
     </li>
     <li class="nav-item text-nowrap">
-      <a class="nav-link" href="#">Trades</a>
+      <a class="nav-link" href="#Stocks">Stocks</a>
+    </li>
+    <li class="nav-item text-nowrap">
+      <a class="nav-link" href="/backtest">Backtest</a>
     </li>
   </ul>
 </nav>
@@ -151,35 +232,42 @@ h1 {
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h2> Paper Trading Results</h2>
-          <style>
+        <a name="Results"></a>
+
+        <style>
              h2 {text-align: center;}
          </style>
         <div class="table-responsive">
           <thread>
             </thread><table style="text-align:center;">
+          <thead>
+          <tr>
+            <th>Starting Cash</th>
+            <th>Ending Cash</th>
+            <th>Change in Cash</th>
+            <th>Date</th>
+            <th>Percent Change</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for item in results %}
+          <TR>
+            <TD class="c2">{{item.startCash}}</TD>
+            <TD class="c3">{{item.endCash}}</TD>
+            <TD class="c4"><SPAN>{{item.resultCash}}</SPAN></TD>
+            <TD class="c5"><SPAN>{{item.date}}</SPAN></TD>
+            <TD class="c5"><SPAN>{{item.percentChange}}</SPAN></TD>
 
-          <tbody><tr>
-              <th>  Market Open</th>
-                <th> Market Close</th>
-                <th> Trading Period 1</th>
-                <th> Trading Period 2</th>
-                <th></th>
-            </tr>
-
-          </tbody><tbody>
-            <tr>
-              <td>1,001</td>
-              <td>Lorem</td>
-              <td>ipsum</td>
-              <td>dolor</td>
-            </tr>
-            </tbody></table>
+          </TR>
+          {% endfor %}
+          </tbody></table>
       </div>
         <!-- Chart ends -->
 
       <canvas class="my-4 w-100" id="myChart" width="700" height="380"></canvas>
 
       <h2>Live Trades</h2>
+        <a name="trades"></a>
       <div class="table-responsive">
         <table class="table table-striped table-sm">
           <thead>
@@ -192,23 +280,25 @@ h1 {
               <th>volume</th>
               <th>sharecount</th>
               <th>timestamp</th>
-              <th>barType</th>
               <th>tradeType</th>
+              <th>takeProfit</th>
+              <th>takeLoss</th>
             </tr>
           </thead>
           <tbody>
             {% for item in trades %}
             <TR>
-              <TD class="c2">{{item.symbol}}</TD>
-              <TD class="c3">{{item.high}}</TD>
-              <TD class="c4"><SPAN>{{item.low}}</SPAN></TD>
-              <TD class="c5"><SPAN>{{item.open}}</SPAN></TD>
+              <TD class="c1">{{item.symbol}}</TD>
+              <TD class="c2">{{item.high}}</TD>
+              <TD class="c3"><SPAN>{{item.low}}</SPAN></TD>
+              <TD class="c4"><SPAN>{{item.open}}</SPAN></TD>
               <TD class="c5"><SPAN>{{item.close}}</SPAN></TD>
-              <TD class="c5"><SPAN>{{item.volume}}</SPAN></TD>
-              <TD class="c5"><SPAN>{{item.sharecount}}</SPAN></TD>
-              <TD class="c5"><SPAN>{{item.timestamp}}</SPAN></TD>
-              <TD class="c5"><SPAN>{{item.tradetype}}</SPAN></TD>
-
+              <TD class="c6"><SPAN>{{item.volume}}</SPAN></TD>
+              <TD class="c7"><SPAN>{{item.sharecount}}</SPAN></TD>
+              <TD class="c8"><SPAN>{{item.timestamp}}</SPAN></TD>
+              <TD class="c9"><SPAN>{{item.tradeType}}</SPAN></TD>
+              <TD class="c10"><SPAN>{{item.takeProfit}}</SPAN></TD>
+              <TD class="c11"><SPAN>{{item.takeLoss}}</SPAN></TD>
             </TR>
             {% endfor %}
           </tbody>
@@ -221,43 +311,16 @@ h1 {
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h2 class="h1"> Algorithm Performance</h2>
+        <a name="Performance"></a>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="table-responsive">
             <thread>
               </thread><table class="table table-striped table-sm">
-            <tbody><tr>
-                <th>#id</th>
-              <th>Symbol</th>
-              <th>High</th>
-              <th>Low</th>
-              <th>Open</th>
-              <th>close</th>
-              <th>volume</th>
-              <th>sharecount</th>
-              <th>timestamp</th>
-              <th>barType</th>
-              <th>tradeType</th>
-
-              </tr>
-
-            </tbody><tbody>
-            <tr>
-              <td>1,001</td>
-              <td>Sample 50</td>
-              <td>Sample 1.5</td>
-              <td>+3,000</td>
-              <td>xShares</td>
-            </tr>
-
-            </tbody>
-    </table>
-
-
-        <div>
-        <canvas id="myCanvas" width="500" height="300" style="border:1px solid #000000;"></canvas>
-      </div>
+            <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+            <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
       <h2>Harvested Data</h2>
+            <a name="Stocks"></a>
             <h3> Select a symbol to see it's movement.</h3>
             <form class="form-inline" method="POST" action="{{ url_for('dashboard') }}">
               <select name= "symbol" method="GET" action="/">

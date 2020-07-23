@@ -1,10 +1,13 @@
 import alpaca_trade_api as tradeapi
 
 from flask import Flask, render_template, request, flash, get_flashed_messages
+from numpy import float as floaty
 
 import dbConnector as db
 import backtesting
 import datetime
+from datetime import timedelta
+import alpacaDrip as ad
 
 
 
@@ -50,23 +53,31 @@ def dashboard():
         for x in scrapedStocks:
             symbols.append(x['symbol'])
 
-        this = datetime.datetime.today()
+        this = datetime.datetime.today()  - timedelta(days=1)
         time = str(this.year) + "-" + str(this.month) + "-" + str(this.day) + " " + str(datetime.time(9,35))
         day = str(this.year) + "-" + str(this.month) + "-" + str(this.day)
         trades = connector.getTradeRecents(connection, time)
+        trades = trades[0:25]
         stonks = connector.getBarsByTime(connection, time)
         stonks = stonks[0:25]
         results = connector.getResultsByDate(connection, day)
+        for x in results:
+            diff = x['endCash'] - x['startCash']
+            percentChange = diff/floaty(x['startCash'])+ 1
+            x['percentChange'] = percentChange
+        strategy = ad.Strategy()
+        hammerChanges = strategy.calculateProfits(connector,connection,'hammer')
+        morningStarChanges = strategy.calculateProfits(connector,connection,'morningStar')
+        senkouBChanges = strategy.calculateProfits(connector,connection, 'senkouB_')
     if request.method == 'POST':
         symbol = request.form.get('symbol')
 
         df = api.polygon.historic_agg_v2(symbol, 1, 'minute', _from='2020-07-01', to='2020-07-01').df
         df['timestamp'] = df.index
         df = df.reset_index(drop=True)
-        print(df)
         return render_template('graph.html', df = df.to_json(), symbol=symbol)
 
-    return render_template('dashboard_copy.html', symbols = symbols, trades = trades, stonks = stonks, results = results)
+    return render_template('dashboard_copy.html', symbols = symbols, trades = trades, stonks = stonks, results = results, hammerChanges = hammerChanges, morningStarChanges = morningStarChanges, senkouBChanges=senkouBChanges)
 
 @app.route("/graph" , methods=['GET','POST'])
 def test():
