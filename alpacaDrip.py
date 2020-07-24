@@ -1,16 +1,20 @@
 #!/usr/bin/python
-import alpaca_trade_api as api
+import alpaca_trade_api as tradeapi
 import datetime
 import pandas as pd
 import pymysql.cursors
 import pymysql
 import numpy as np
-from datetime import timezone
+import time
 
-BASE_URL = 'https://paper-api.alpaca.markets'
-KEY_ID = 'PKXJ9PFWUR1PV0W4CR3Z'
-SECRET_KEY = 'fQPmWsENWU7hrWlxoyGrPDsOOxehqkielyVs3bJ8'
+ALPACA_KEY_ID = 'PK3VZLXGJAE5FPVLWCOU'
+ALPACA_SECRET_KEY = r'NtLnmeY6PtUpPXD2kGblhezLg/6f4lHqEcIqrR/3'
 
+api = tradeapi.REST(
+    key_id=ALPACA_KEY_ID,
+    secret_key=ALPACA_SECRET_KEY,
+    base_url='https://paper-api.alpaca.markets'
+)
 class Strategy:
     def isHammerBar(self, bar):
         if True == np.where(bar['open'] <= bar['high'],True,False):
@@ -39,28 +43,36 @@ class Strategy:
             simpleMovingAverage = -simpleMovingAverage
         return simpleMovingAverage
 
-    #function containing a complete strategy
-    def hammerTimeTrading(self, sma, symbol, bar):
-        #check if the current bar is a hammer and the last 5 bars were a negative moving average
-        if self.isHammerBar(bar[0]) and sma < 0:
-            #buy position at hammer (current bar)
+    def submitBuyOrder(self, symbol, shares, limitPrice):
+
             api.submit_order(
                 symbol=symbol,
                 side='buy',
                 type='limit',
-                qty='100',
+                qty=shares,
                 time_in_force='day',
-                order_class='bracket',
-                take_profit=dict(
-                    limit_price=bar['close'] + .5,
-                ),
-                stop_loss=dict(
-                    stop_price=bar['close'] - .5,
-                )
+                limit_price= limitPrice,
+
             )
-            print('ORDER SUBMITTED')
+            time.sleep(4)
+            currentOrders = api.list_orders()
+            for order in currentOrders:
+                if order.symbol == symbol and order.qty == shares:
+                    print('Order not filled')
+                    api.cancel_order(order.id)
+                    return False
 
             return True
+    def submitSellOrder(self,symbol,shares):
+        api.submit_order(
+            symbol=symbol,
+            side='sell',
+            type='market',
+            qty=shares,
+            time_in_force='gtc',
+        )
+        return True
+
     def calculateProfits(self, connector, connection, algo):
         buy = []
         sell = []
