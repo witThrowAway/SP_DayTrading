@@ -86,11 +86,11 @@ function toggleDataSeries(e){
 
 }
 </script>
-<link href="../assets/dist/css/bootstrap.css" rel="stylesheet">
 
-    <link href="/Users/ryangould/Downloads/SP_DayTrading/static/css/dashboard.css" rel="stylesheet">
   <style type="text/css">/* Chart.js */
-@-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}</style></head>
+@-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}
+</style>
+</head>
   <body>
   <h1>The Grand Exchange</h1>
   <style>
@@ -119,13 +119,8 @@ function toggleDataSeries(e){
 </nav>
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h2> Paper Trading Results</h2>
         <a name="Results"></a>
-
-        <style>
-             h2 {text-align: center;}
-         </style>
         <div class="table-responsive">
           <thread>
             </thread><table style="text-align:center;">
@@ -151,10 +146,6 @@ function toggleDataSeries(e){
           {% endfor %}
           </tbody></table>
       </div>
-        <!-- Chart ends -->
-
-      <canvas class="my-4 w-100" id="myChart" width="700" height="380"></canvas>
-
       <h2>Live Trades</h2>
         <a name="trades"></a>
       <div class="table-responsive">
@@ -193,13 +184,11 @@ function toggleDataSeries(e){
           </tbody>
         </table>
       </div>
-    </div></main>
+    </main>
 
   <!-- Algorithm performance table -->
 
     <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h2 class="h1"> Algorithm Performance</h2>
         <a name="Performance"></a>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="table-responsive">
@@ -247,13 +236,9 @@ function toggleDataSeries(e){
           {% endfor %}
           </tbody>
         </table>
-      </div>
     </div></div></div></main>
 
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-      <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script><script src="../assets/dist/js/bootstrap.bundle.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-        <script src="/Users/ryangould/Downloads/SP_DayTrading/WebFiles/dashboard.js"></script>
 </body></html>
