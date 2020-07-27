@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
                 takeProfit = floaty()
                 lossProfit = floaty()
-                for x in symbols[0:65]:
+                for x in symbols[0:50]:
                     workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
 
                     if len(workingSet) == 5:
@@ -76,10 +76,10 @@ if __name__ == "__main__":
                                     lossProfit = lossProfitPercent * buyPrice
                                     #if strategy.submitBuyOrder(x['symbol'], shares, buyPrice):
                                     if existingPosition == 0:
-                                            connector.insertPosition(connection,workingSet[currentBar]['symbol'], 'hammer')
+                                        connector.insertPosition(connection,workingSet[currentBar]['symbol'], 'hammer')
                                     else:
                                             connector.modifyPosition(connection,workingSet[currentBar]['symbol'], 1, 'hammer')
-                                        connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerBuy', connection,takeProfit,lossProfit)
+                                    connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerBuy', connection,takeProfit,lossProfit)
 
 
                         if currentPosition == 1:

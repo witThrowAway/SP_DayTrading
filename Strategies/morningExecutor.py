@@ -89,7 +89,7 @@ if __name__ == "__main__":
                                             connector.insertPosition(connection,workingSet[currentBar]['symbol'], 'morningStar')
                                     else:
                                             connector.modifyPosition(connection,workingSet[currentBar]['symbol'], 1, 'morningStar')
-                                        connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'morningStarBuy', connection, takeProfit, lossProfit)
+                                    connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'morningStarBuy', connection, takeProfit, lossProfit)
 
 
                         if currentPosition == 1:
