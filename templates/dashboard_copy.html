@@ -98,24 +98,31 @@ function toggleDataSeries(e){
     </style>
 
     <nav class="navbar navbar-dark sticky-top bg-dark shadow">
+<style>.navbar {
+   height: 50px;
+}
 
-  <ul class="navbar-nav">
-    <li class="nav-item text-nowrap">
-      <a class="nav-link" href="#Results">Results</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#trades">Trades</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#Performance">Performance</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#Stocks">Stocks</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="/backtest">Backtest</a>
-    </li>
+#list ul{
+  list-style: none;
+}
+#list li{
+  display: inline;
+  padding-left:30px;
+  padding-right:30px;
+}
+a {
+color: white;
+}
+</style>
+      <div id = "list">
+  <ul id= "bar">
+     <li> <a class="" href="#Results">Results</a></li>
+      <li><a class="" href="#trades">Trades</a></li>
+      <li><a class="" href="#Performance">Performance</a></li>
+      <li><a class="" href="#Stocks">Stocks</a></li>
+      <li><a class="" href="/backtest">Backtest</a></li>
   </ul>
+      </div>
 </nav>
 
     <main role="main" class="">
