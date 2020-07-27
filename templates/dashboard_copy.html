@@ -97,29 +97,32 @@ function toggleDataSeries(e){
     h1 {text-align: center;}
     </style>
 
-    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+    <nav class="navbar navbar-dark sticky-top bg-dark shadow">
 
-  <ul class="navbar-nav px-3">
+  <ul class="navbar-nav">
     <li class="nav-item text-nowrap">
       <a class="nav-link" href="#Results">Results</a>
     </li>
-    <li class="nav-item text-nowrap">
+    <li class="nav-item">
       <a class="nav-link" href="#trades">Trades</a>
     </li>
-    <li class="nav-item text-nowrap">
+    <li class="nav-item">
       <a class="nav-link" href="#Performance">Performance</a>
     </li>
-    <li class="nav-item text-nowrap">
+    <li class="nav-item">
       <a class="nav-link" href="#Stocks">Stocks</a>
     </li>
-    <li class="nav-item text-nowrap">
+    <li class="nav-item">
       <a class="nav-link" href="/backtest">Backtest</a>
     </li>
   </ul>
 </nav>
 
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+    <main role="main" class="">
         <h2> Paper Trading Results</h2>
+      <style>
+    h2 {text-align: center;}
+    </style>
         <a name="Results"></a>
         <div class="table-responsive">
           <thread>
@@ -147,6 +150,9 @@ function toggleDataSeries(e){
           </tbody></table>
       </div>
       <h2>Live Trades</h2>
+      <style>
+    h2 {text-align: center;}
+    </style>
         <a name="trades"></a>
       <div class="table-responsive">
         <table class="table table-striped table-sm">
@@ -174,7 +180,7 @@ function toggleDataSeries(e){
               <TD class="c4"><SPAN>{{item.open}}</SPAN></TD>
               <TD class="c5"><SPAN>{{item.close}}</SPAN></TD>
               <TD class="c6"><SPAN>{{item.volume}}</SPAN></TD>
-              <TD class="c7"><SPAN>{{item.sharecount}}</SPAN></TD>
+              <TD class="c7"><SPAN>{{item.shareCount}}</SPAN></TD>
               <TD class="c8"><SPAN>{{item.timestamp}}</SPAN></TD>
               <TD class="c9"><SPAN>{{item.tradeType}}</SPAN></TD>
               <TD class="c10"><SPAN>{{item.takeProfit}}</SPAN></TD>
@@ -188,7 +194,7 @@ function toggleDataSeries(e){
 
   <!-- Algorithm performance table -->
 
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+    <main role="main" class="">
         <a name="Performance"></a>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="table-responsive">
