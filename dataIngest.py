@@ -34,11 +34,11 @@ if __name__ == '__main__':
         barType = 'barType'
         strategy = ad.Strategy()
         # iterate through symbols getting bar info for each symbol of last minute
-        for x in unscreened_stocks[0:65]:
+        for x in unscreened_stocks[0:50]:
             df = pd.DataFrame()
             tryCounter = 0
             # check if df has a value to account for API response time
-            while df.empty and tryCounter < 10:
+            while df.empty and tryCounter < 5:
                 df = api.get_barset(unscreened_stocks[count]["symbol"], '1Min', limit=1, after=window).df
                 tryCounter +=1
             if not df.empty:
