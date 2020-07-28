@@ -81,7 +81,7 @@ class dbConnector:
 
     def getBarsByTime(self, connection, timestamp):
         with connection.cursor() as cursor:
-            sql = "SELECT * FROM `Stonks` WHERE `timestamp` > %s"
+            sql = "SELECT * FROM `Stonks` WHERE `timestamp` > %s ORDER BY timestamp DESC"
             cursor.execute(sql, (timestamp))
             result = cursor.fetchall()
         return result
@@ -117,7 +117,7 @@ class dbConnector:
         return result
     def getTradeRecents(self, connection, time):
         with connection.cursor() as cursor:
-            sql = "SELECT * FROM `Trades` WHERE `timestamp` > %s"
+            sql = "SELECT * FROM `Trades` WHERE `timestamp` > %s ORDER BY timestamp DESC"
             cursor.execute(sql, (time))
             result = cursor.fetchall()
         return result
@@ -232,7 +232,7 @@ class dbConnector:
     def getResultsByDate(self,connection, date):
         try:
             with connection.cursor() as cursor:
-                sql = "SELECT startCash, endCash, resultCash, date FROM `Results` WHERE `date` = %s"
+                sql = "SELECT startCash, endCash, resultCash, date FROM `Results` WHERE `date` >= %s"
                 cursor.execute(sql,date)
                 result = cursor.fetchall()
         except Exception as e:
@@ -243,7 +243,7 @@ class dbConnector:
     def getTradesAlgoAndDate(self,connection, tradeType1, tradeType2, tradeType3, tradeType4, tradeType5, tradeType6):
         try:
             with connection.cursor() as cursor:
-                sql = "SELECT symbol, close, tradeType, timestamp FROM `Trades` WHERE DATE(`timestamp`) > CURDATE() - INTERVAL 1 DAY and (tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s)"
+                sql = "SELECT symbol, close, tradeType, timestamp FROM `Trades` WHERE DATE(`timestamp`) > CURDATE() - INTERVAL 2 DAY and (tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s)"
                 cursor.execute(sql,(tradeType1,tradeType2,tradeType3,tradeType4, tradeType5, tradeType6))
                 result = cursor.fetchall()
         except Exception as e:

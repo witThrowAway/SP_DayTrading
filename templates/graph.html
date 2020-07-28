@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    {% block styles %}
+    <link rel="stylesheet"
+          href="{{url_for('static', filename='css/bootstrap.css')}}">
+    {% endblock %}
     <title>Grand Exchange Bot</title>
 
     <script>
@@ -59,6 +63,7 @@ function updateChart(jsonObj) {
 
 	for (var i = 0; i < 1000; i++) {
 			var timestamp = jsonObj[0].timestamp[i]
+			console.log(timestamp)
 			var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
             d.setTime(timestamp);
             console.log(d);

@@ -53,9 +53,10 @@ def dashboard():
         for x in scrapedStocks:
             symbols.append(x['symbol'])
 
-        this = datetime.datetime.today()  - timedelta(days=1)
+        this = datetime.datetime.today() - timedelta(days=5)
         time = str(this.year) + "-" + str(this.month) + "-" + str(this.day) + " " + str(datetime.time(9,35))
         day = str(this.year) + "-" + str(this.month) + "-" + str(this.day)
+        print(day)
         trades = connector.getTradeRecents(connection, time)
         trades = trades[0:25]
         stonks = connector.getBarsByTime(connection, time)
@@ -107,8 +108,6 @@ def backtest():
         return render_template('backtest.html')
     if request.method == 'POST':
         try:
-
-
             cash = request.form.get('cash')
             stocks = (request.form.get('stocks')).split(',')
             from_date = request.form.get('from_date')
@@ -121,9 +120,9 @@ def backtest():
             print('Starting backtest')
 
 
-            if strat == 'bband_rsi_algo':
-                alltrades = backtesting.algoStart(api, stocks, from_date, to_date, cash)
-            #if strat == 'hammer':
+            alltrades = backtesting.algoStart(api, stocks, from_date, to_date, cash, strat)
+
+
 
 
             return render_template('backtestresults.html', alltrades=alltrades)
