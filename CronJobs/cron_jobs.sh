@@ -1,2 +1,1 @@
-/usr/bin/python3.8 /home/trade/Desktop/SP_DayTrading/dataIngest.py
-
+/usr/bin/python3.8 /Users/ryan/IdeaProjects/SP_DayTrading/cashReader.py

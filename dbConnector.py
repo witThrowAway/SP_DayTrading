@@ -7,9 +7,9 @@ class dbConnector:
         print("dbObject created")
     def createConnection(self):
         # Connect to the database
-        connection = pymysql.connect(host='73.186.158.111',
-                                 user='trade0',
-                                 password='Mountain11231!',
+        connection = pymysql.connect(host='10.0.1.14',
+                                 #user='trade0',
+                                 #password='Mountain11231!',
                                  db='GrandExchange',
                                  charset='utf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
@@ -128,10 +128,16 @@ class dbConnector:
             cursor.execute(sql, timestamp)
             result = cursor.fetchall()
         return result
+    def getAllDistinctMentions(self, connection):
+        with connection.cursor() as cursor:
+            sql = "SELECT DISTINCT symbol FROM `Mentions`"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+        return result
 
     def getMarketWatchData(self, connection):
         with connection.cursor() as cursor:
-            sql = "SELECT * FROM `MarketWatch`"
+            sql = "SELECT symbol FROM `MarketWatch`"
             cursor.execute(sql)
             result = cursor.fetchall()
         return result
@@ -243,7 +249,7 @@ class dbConnector:
     def getTradesAlgoAndDate(self,connection, tradeType1, tradeType2, tradeType3, tradeType4, tradeType5, tradeType6):
         try:
             with connection.cursor() as cursor:
-                sql = "SELECT symbol, close, tradeType, timestamp FROM `Trades` WHERE DATE(`timestamp`) > CURDATE() - INTERVAL 2 DAY and (tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s)"
+                sql = "SELECT symbol, close, tradeType, timestamp FROM `Trades` WHERE DATE(`timestamp`) > CURDATE() - INTERVAL 12 DAY and DATE(`timestamp`) < CURDATE() - INTERVAL 6 DAY and (tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s)"
                 cursor.execute(sql,(tradeType1,tradeType2,tradeType3,tradeType4, tradeType5, tradeType6))
                 result = cursor.fetchall()
         except Exception as e:

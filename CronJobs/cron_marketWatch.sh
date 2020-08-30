@@ -1,1 +1,1 @@
-/usr/bin/python3.8 /home/trade/Desktop/SP_DayTrading/Scrapers/15_minute_scrape.py
+/usr/bin/python3.8 /Users/ryan/ideaProjects/SP_DayTrading/Scrapers/15_minute_scrape.py
