@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/home/trade/Desktop/SP_DayTrading/')
+sys.path.append('/Users/ryan/IdeaProjects/SP_DayTrading/')
 import dbConnector as db
 from Scrapers import marketwatchScraper as ms
 
