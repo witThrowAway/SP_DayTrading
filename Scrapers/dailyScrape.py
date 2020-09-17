@@ -28,3 +28,4 @@ if __name__ == '__main__':
         connector.insertMention(x,connection)
     for x in symbols[1:75]:
         connector.insertMention(x,connection)
+    print("daily scrape executed")

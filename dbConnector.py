@@ -1,15 +1,15 @@
-import pymysql.cursors
+#import pymysql.cursors
 import pymysql
 from datetime import date
 
 class dbConnector:
     def __init__(self):
-        print("dbObject created")
+        print("")
     def createConnection(self):
         # Connect to the database
-        connection = pymysql.connect(host='localhost',
-                                 user='root',
-                                 port = 3306,
+
+        connection = pymysql.connect(host='10.0.1.14',
+                                 user='trade',
                                  password='autotrade',
                                  db='GrandExchange',
                                  charset='utf8mb4',
@@ -31,13 +31,13 @@ class dbConnector:
             return False
         finally:
             return True
-    def insertTrade(self, symbol, high, low, open, close, volume, shareCount, barType, tradeType, connection, takeProfit, takeLoss):
+    def insertTrade(self, symbol, high, low, open, close, volume, shareCount, tradeType, connection, takeProfit, takeLoss):
         #try:
             with connection.cursor() as cursor:
                 # Create a new record
 
-                sql = "INSERT INTO `Trades` (`symbol`, `high`, `low`, `open`, `close`, `volume`, `shareCount`, `barType`, `tradeType`, `takeProfit`, `takeLoss`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-                cursor.execute(sql, (symbol, high, low, open, close, volume, shareCount, barType, tradeType, takeProfit, takeLoss))
+                sql = "INSERT INTO `Trades` (`symbol`, `high`, `low`, `open`, `close`, `volume`, `shareCount`, `tradeType`, `takeProfit`, `takeLoss`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                cursor.execute(sql, (symbol, high, low, open, close, volume, shareCount, tradeType, takeProfit, takeLoss))
 
                 # connection is not autocommit by default. So you must commit to save
                 # your changes.
@@ -58,8 +58,8 @@ class dbConnector:
                 # connection is not autocommit by default. So you must commit to save
                 # your changes.
                 connection.commit()
-        except ConnectionError:
-            print("Connection Error")
+        except Exception as e:
+            print(str(e))
             return False
         finally:
             return True
@@ -155,19 +155,19 @@ class dbConnector:
         return True
     def insertPosition(self, connection, symbol, algo):
         with connection.cursor() as cursor:
-            sql = "INSERT INTO `currentPositions` (`symbol`, `position`, `algo`) VALUES (%s, 1, %s)"
+            sql = "INSERT INTO `currentPositions` (`symbol`, `position`, `algorithm`) VALUES (%s, 1, %s)"
             cursor.execute(sql, (symbol, algo))
             connection.commit()
         return True
     def modifyPosition(self, connection, symbol,position, algo):
         with connection.cursor() as cursor:
-            sql = "UPDATE `currentPositions` SET `position` = %s WHERE `symbol` = %s AND `algo` = %s"
+            sql = "UPDATE `currentPositions` SET `position` = %s WHERE `symbol` = %s AND `algorithm` = %s"
             cursor.execute(sql, (position, symbol, algo))
             connection.commit()
         return True
     def getPosition(self,connection,symbol, algo):
         with connection.cursor() as cursor:
-            sql = "SELECT position FROM `currentPositions` WHERE `symbol` = %s AND `algo` = %s"
+            sql = "SELECT position FROM `currentPositions` WHERE `symbol` = %s AND `algorithm` = %s"
             cursor.execute(sql,(symbol, algo))
             result = cursor.fetchall()
         return result
