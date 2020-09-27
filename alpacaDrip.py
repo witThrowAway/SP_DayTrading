@@ -7,8 +7,8 @@ import pymysql
 import numpy as np
 import time
 
-ALPACA_KEY_ID = 'PK3VZLXGJAE5FPVLWCOU'
-ALPACA_SECRET_KEY = r'NtLnmeY6PtUpPXD2kGblhezLg/6f4lHqEcIqrR/3'
+ALPACA_KEY_ID = 'PKD6W26XBA1JGWOSJSU0'
+ALPACA_SECRET_KEY = r'ysaezMtOX8sUghmR534ZGzEXzCTVpkDt26BEIY8e'
 
 api = tradeapi.REST(
     key_id=ALPACA_KEY_ID,
@@ -19,7 +19,7 @@ class Strategy:
     def isHammerBar(self, bar):
         if True == np.where(bar['open'] <= bar['high'],True,False):
             if True == np.where(bar['open'] > bar['close'],True,False):
-                if True == np.where(bar['low'] * 1.025 < bar['close'],True,False):
+                if True == np.where(bar['low'] * 1.005 < bar['close'],True,False):
                         return True
         else:
             return False
@@ -42,6 +42,15 @@ class Strategy:
         if simpleMovingAverage < workingSet.iloc[start]['close']:
             simpleMovingAverage = -simpleMovingAverage
         return simpleMovingAverage
+    def normalizedSMA(self, workingSet, start, end):
+        sum = 0.0
+        simpleMovingAverage = 0.0
+        for x in range(start,end):
+            sum += workingSet.iloc[x]['close']
+        simpleMovingAverage = (sum/5)/workingSet.iloc[x]['close']
+        if simpleMovingAverage < workingSet.iloc[start]['close']:
+            simpleMovingAverage = -simpleMovingAverage
+        return simpleMovingAverage
 
     def submitBuyOrder(self, symbol, shares, limitPrice):
 
@@ -51,17 +60,19 @@ class Strategy:
                 type='limit',
                 qty=shares,
                 time_in_force='day',
-                limit_price= limitPrice,
+                limit_price=limitPrice,
 
             )
-            time.sleep(4)
+            time.sleep(10)
             currentOrders = api.list_orders()
-            for order in currentOrders:
-                if order.symbol == symbol and order.qty == shares:
-                    print('Order not filled')
-                    api.cancel_order(order.id)
-                    return False
+            if len(currentOrders) > 0:
+                for order in currentOrders:
+                    if order.symbol == symbol and order.qty == shares:
+                        print(symbol, ' order not filled')
+                        api.cancel_order(order.id)
 
+                        return False
+            print(symbol, " order filled")
             return True
     def submitSellOrder(self,symbol,shares):
         api.submit_order(
@@ -117,4 +128,5 @@ class Strategy:
                 y = 0
 
         changes.sort(key = lambda x: x[1])
+        print(changes)
         return changes
