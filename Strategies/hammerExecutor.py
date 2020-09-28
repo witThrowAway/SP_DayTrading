@@ -14,7 +14,7 @@ import alpacaDrip as ad
 if __name__ == "__main__":
 
         #start this strategy at 9:35 AM
-            #start_time = time()
+            start_time = time()
             if datetime.datetime.now().time() > datetime.time(9,35):
                 #print("here")
                 # Connect to the database
@@ -66,7 +66,8 @@ if __name__ == "__main__":
                             existingPosition = 1
 
                         closePrice = workingSet[currentBar]['close']
-                        if strategy.isHammerBar(workingSet[currentBar]) and sma < 0 and currentPosition != 1 and buyClose > workingSet[currentBar]['timestamp'].time():
+                        #if strategy.isHammerBar(workingSet[currentBar]) and sma < 0 and currentPosition != 1 and buyClose > workingSet[currentBar]['timestamp'].time():
+                        if strategy.predictOnHammer(workingSet) == 1 and  currentPosition != 1 and buyClose > workingSet[currentBar]['timestamp'].time():
                                     buyPrice = workingSet[currentBar]['close']
                                     shares = int(maxPosition / closePrice)
                                     cash = shares * closePrice
@@ -129,4 +130,4 @@ if __name__ == "__main__":
                                         connector.addCash(connection, cashChange, 8)
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
                                         connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerSellAtMarketClose', connection, 0,0)
-                #print("--- %s seconds ---" % (time() - start_time))
+            print("--- %s seconds ---" % (time() - start_time))

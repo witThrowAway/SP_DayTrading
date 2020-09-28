@@ -6,6 +6,7 @@ import pymysql.cursors
 import pymysql
 import numpy as np
 import time
+import pickle
 
 ALPACA_KEY_ID = 'PKD6W26XBA1JGWOSJSU0'
 ALPACA_SECRET_KEY = r'ysaezMtOX8sUghmR534ZGzEXzCTVpkDt26BEIY8e'
@@ -49,6 +50,15 @@ class Strategy:
             sum += workingSet.iloc[x]['close']
         simpleMovingAverage = (sum/5)/workingSet.iloc[x]['close']
         if simpleMovingAverage < workingSet.iloc[start]['close']:
+            simpleMovingAverage = -simpleMovingAverage
+        return simpleMovingAverage
+    def normalizedSMAList(self, workingSet, start, end):
+        sum = 0.0
+        simpleMovingAverage = 0.0
+        for x in range(start,end):
+            sum += workingSet[x]['close']
+        simpleMovingAverage = (sum/5)/workingSet[x]['close']
+        if simpleMovingAverage < workingSet[start]['close']:
             simpleMovingAverage = -simpleMovingAverage
         return simpleMovingAverage
 
@@ -130,3 +140,20 @@ class Strategy:
         changes.sort(key = lambda x: x[1])
         print(changes)
         return changes
+    def predictOnHammer(self,workingSet):
+        #calculate normalized SMA
+        sma = self.normalizedSMAList(workingSet, 0,4)
+        #Use max/min values in training set to normalize tail length and volume
+        minTail = .0072
+        maxTail = 120.0
+        maxVol = 3522372
+        minVol = 1
+        filename = '/Users/ryangould/Desktop/vc_model.sav'
+        tailLength = ((workingSet[4]['close'] - workingSet[4]['low']) - minTail) / (maxTail - minTail)
+        volume = (workingSet[4]['volume'] - minVol) / (maxVol - minVol)
+        d = {'SMA': [sma], 'tailLength': [tailLength], 'volume': [volume]}
+        df = pd.DataFrame(data=d)
+        #load model from object file
+        loaded_model = pickle.load(open(filename, 'rb'))
+        return loaded_model.predict(df)
+

@@ -25,7 +25,7 @@ def isMorningStar(bar):
 if __name__ == "__main__":
 
         #start this strategy at 9:35 AM
-            #start_time = time()
+            start_time = time()
             if datetime.datetime.now().time() > datetime.time(9,35):
                 #print("here")
                 # Connect to the database
@@ -126,6 +126,6 @@ if __name__ == "__main__":
                                             connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0, 'morningStar')
                                             connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'morningStarSellAtBuyClose', connection,0,0)
 
-            #print("--- %s seconds ---" % (time() - start_time))
+            print("--- %s seconds ---" % (time() - start_time))
 
 
