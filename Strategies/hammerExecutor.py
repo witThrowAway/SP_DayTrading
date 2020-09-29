@@ -1,5 +1,4 @@
 import datetime
-import time
 from datetime import time
 import sys
 from numpy import float as floaty
@@ -14,8 +13,8 @@ import alpacaDrip as ad
 if __name__ == "__main__":
 
         #start this strategy at 9:35 AM
-            start_time = time()
-            if datetime.datetime.now().time() > datetime.time(9,35):
+        start_time = datetime.datetime.now()
+        if datetime.datetime.now().time() > datetime.time(9,35):
                 #print("here")
                 # Connect to the database
                 connector = db.dbConnector()
@@ -130,4 +129,4 @@ if __name__ == "__main__":
                                         connector.addCash(connection, cashChange, 8)
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
                                         connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, workingSet[currentBar]['barType'], 'hammerSellAtMarketClose', connection, 0,0)
-            print("--- %s seconds ---" % (time() - start_time))
+        print("time taken:", (datetime.datetime.now() - start_time))
