@@ -126,6 +126,6 @@ if __name__ == "__main__":
                                             connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0, 'morningStar')
                                             connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'morningStarSellAtBuyClose', connection,0,0)
 
-            print("time taken:", (datetime.datetime.now() - start_time))
+            print("morning time taken:", (datetime.datetime.now() - start_time))
 
 

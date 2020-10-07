@@ -25,17 +25,10 @@ if __name__ == "__main__":
                 window = datetime.datetime.now() - datetime.timedelta(minutes=5)
                 symbols = connector.getMentions(connection)
                 strategy = ad.Strategy()
-                ############ make value dynamic
-                #cash = 25000
-                cash = connector.getCash(connection,8)
-                cash = cash[0]['cash']
-                ############
                 sma = 0
-                buyPrice = 0
                 shares = 0
                 takeProfitPercent = 1.04
                 lossProfitPercent = .98
-                maxPosition = cash * .1
                 buyClose = datetime.time(14,00)
                 marketClose = datetime.time(15,30)
                 alltrades = []
@@ -44,7 +37,9 @@ if __name__ == "__main__":
                 lossProfit = floaty()
                 for x in symbols[0:50]:
                     workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
-
+                    cash = connector.getCash(connection,8)
+                    cash = cash[0]['cash']
+                    maxPosition = cash * .1
                     if len(workingSet) == 5:
                         #print(workingSet)
                         currentBar = len(workingSet)-1
@@ -65,15 +60,14 @@ if __name__ == "__main__":
                             existingPosition = 1
 
                         closePrice = workingSet[currentBar]['close']
+                        shares = int(maxPosition / closePrice)
+                        cashChange = shares * closePrice
                         #if strategy.isHammerBar(workingSet[currentBar]) and sma < 0 and currentPosition != 1 and buyClose > workingSet[currentBar]['timestamp'].time():
-                        if strategy.predictOnHammer(workingSet) == 1 and currentPosition != 1 and buyClose > workingSet[currentBar]['timestamp'].time():
-                                    buyPrice = workingSet[currentBar]['close']
-                                    shares = int(maxPosition / closePrice)
-                                    cash = shares * closePrice
+                        if strategy.predictOnHammer(workingSet) == 1 and currentPosition != 1 and buyClose > workingSet[currentBar]['timestamp'].time() and cash > cashChange:
                                     print("-",cash)
-                                    connector.subtractCash(connection, cash, 8)
-                                    takeProfit = takeProfitPercent * buyPrice
-                                    lossProfit = lossProfitPercent * buyPrice
+                                    connector.subtractCash(connection, cashChange, 8)
+                                    takeProfit = takeProfitPercent * closePrice
+                                    lossProfit = lossProfitPercent * closePrice
                                     #if strategy.submitBuyOrder(x['symbol'], shares, buyPrice):
                                     if existingPosition == 0:
                                         connector.insertPosition(connection,workingSet[currentBar]['symbol'], 'hammer')
@@ -85,11 +79,9 @@ if __name__ == "__main__":
 
                         if currentPosition == 1:
                                     if closePrice >= takeProfit:
-                                        if (buyPrice < closePrice):
                                             print('hsell')
                                             uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                             shares = uncleanShareCount[0]['shareCount']
-                                            cashChange = (shares * closePrice)
                                             #if strategy.submitSellOrder(x['symbol'], shares):
                                             connector.addCash(connection, cashChange, 8)
                                             connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
@@ -102,7 +94,6 @@ if __name__ == "__main__":
                                         print('hsell')
                                         uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                         shares = uncleanShareCount[0]['shareCount']
-                                        cashChange = (shares * closePrice)
                                         #if strategy.submitSellOrder(x['symbol'], shares):
                                         connector.addCash(connection, cashChange, 8)
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
@@ -114,7 +105,6 @@ if __name__ == "__main__":
                                         print('hsell')
                                         uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                         shares = uncleanShareCount[0]['shareCount']
-                                        cashChange = (shares * closePrice)
                                         #if strategy.submitSellOrder(x['symbol'], shares):
                                         connector.addCash(connection, cashChange, 8)
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
@@ -124,7 +114,6 @@ if __name__ == "__main__":
                                         print('hsell')
                                         uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                         shares = uncleanShareCount[0]['shareCount']
-                                        cashChange = (shares * closePrice)
                                         #if strategy.submitSellOrder(x['symbol'], shares):
                                         connector.addCash(connection, cashChange, 8)
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
