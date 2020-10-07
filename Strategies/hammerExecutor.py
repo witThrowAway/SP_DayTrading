@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
         #start this strategy at 9:35 AM
         start_time = datetime.datetime.now()
-        if datetime.datetime.now().time() > datetime.time(9,35):
+        if datetime.datetime.now().time() > datetime.time(9,35) and datetime.datetime.now().time() <= datetime.time(16,1):
                 #print("here")
                 # Connect to the database
                 connector = db.dbConnector()
@@ -62,8 +62,9 @@ if __name__ == "__main__":
                         closePrice = workingSet[currentBar]['close']
                         shares = int(maxPosition / closePrice)
                         cashChange = shares * closePrice
+                        prediction = strategy.predictOnHammer(workingSet)
                         #if strategy.isHammerBar(workingSet[currentBar]) and sma < 0 and currentPosition != 1 and buyClose > workingSet[currentBar]['timestamp'].time():
-                        if strategy.predictOnHammer(workingSet) == 1 and currentPosition != 1 and buyClose > workingSet[currentBar]['timestamp'].time() and cash > cashChange:
+                        if prediction == 1 and currentPosition != 1 and buyClose > workingSet[currentBar]['timestamp'].time() and cash > cashChange:
                                     print("-",cash)
                                     connector.subtractCash(connection, cashChange, 8)
                                     takeProfit = takeProfitPercent * closePrice
@@ -72,7 +73,7 @@ if __name__ == "__main__":
                                     if existingPosition == 0:
                                         connector.insertPosition(connection,workingSet[currentBar]['symbol'], 'hammer')
                                     else:
-                                            connector.modifyPosition(connection,workingSet[currentBar]['symbol'], 1, 'hammer')
+                                        connector.modifyPosition(connection,workingSet[currentBar]['symbol'], 1, 'hammer')
                                     print("hammerBuy")
                                     connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'hammerBuy', connection,takeProfit,lossProfit)
 
