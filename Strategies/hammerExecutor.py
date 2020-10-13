@@ -69,7 +69,7 @@ if __name__ == "__main__":
                                     connector.subtractCash(connection, cashChange, 8)
                                     takeProfit = takeProfitPercent * closePrice
                                     lossProfit = lossProfitPercent * closePrice
-                                    if strategy.submitBuyOrder(x['symbol'], shares, buyPrice):
+                                    if strategy.submitBuyOrder(x['symbol'], shares, closePrice):
                                         if existingPosition == 0:
                                             connector.insertPosition(connection,workingSet[currentBar]['symbol'], 'hammer')
                                         else:
