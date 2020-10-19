@@ -16,7 +16,7 @@ def isMorningStar(bar):
 
         if True == np.where(bar[0]['volume'] > bar[1]['volume'] and bar[2]['volume'] > bar[1]['volume'], True, False):
 
-            if True == np.where(bar[2]['volume'] >= (.96 * bar[1]['volume']), True, False):
+            if True == np.where(bar[2]['volume'] >= (.98 * bar[1]['volume']), True, False):
 
                 if True == np.where(bar[0]['low'] >= bar[1]['low'] and bar[2]['low'] < bar[0]['low'], True, False):
 
