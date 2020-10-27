@@ -40,17 +40,23 @@ if __name__ == '__main__':
     for x in marketWatchStocks[1:75]:
         tryCounter = 0
         asset = None
-        while asset is None and tryCounter < 5:
-            asset = api.get_asset(x)
-            tryCounter += 1
-        if asset.tradeable:
-            connector.insertMention(x,connection)
+        try:
+            while asset is None and tryCounter < 5:
+                    asset = api.get_asset(x)
+                    tryCounter += 1
+            if asset.tradable and asset is not None:
+                    connector.insertMention(x,connection)
+        except Exception as e:
+            print(x," not tradable")
     for x in symbols[1:75]:
         tryCounter = 0
         asset = None
-        while asset is None and tryCounter < 5:
-            asset = api.get_asset(x)
-            tryCounter += 1
-        if asset.tradeable:
-            connector.insertMention(x,connection)
+        try:
+            while asset is None and tryCounter < 5:
+                asset = api.get_asset(x)
+                tryCounter += 1
+            if asset.tradable and asset is not None:
+                connector.insertMention(x,connection)
+        except Exception as e:
+            print(x," not tradable")
     print("daily scrape executed")
