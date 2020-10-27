@@ -37,9 +37,6 @@ if __name__ == '__main__':
         marketWatchStocks.append(stockObject.symbol)
     print(marketWatchStocks)
 
-    df = pd.DataFrame()
-    window = datetime.datetime.now() - datetime.timedelta(minutes=1)
-
     for x in marketWatchStocks[1:75]:
         tryCounter = 0
         asset = None
