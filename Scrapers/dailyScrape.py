@@ -42,16 +42,18 @@ if __name__ == '__main__':
 
     for x in marketWatchStocks[1:75]:
         tryCounter = 0
-        while df.empty and tryCounter < 5:
-            df = api.get_barset(x, '1Min', limit=1, after=window).df
-            tryCounter +=1
-        if not df.empty:
+        asset = None
+        while asset is None and tryCounter < 5:
+            asset = api.get_asset(x)
+            tryCounter += 1
+        if asset.tradeable:
             connector.insertMention(x,connection)
     for x in symbols[1:75]:
         tryCounter = 0
-        while df.empty and tryCounter < 5:
-            df = api.get_barset(x, '1Min', limit=1, after=window).df
-            tryCounter +=1
-        if not df.empty:
+        asset = None
+        while asset is None and tryCounter < 5:
+            asset = api.get_asset(x)
+            tryCounter += 1
+        if asset.tradeable:
             connector.insertMention(x,connection)
     print("daily scrape executed")
