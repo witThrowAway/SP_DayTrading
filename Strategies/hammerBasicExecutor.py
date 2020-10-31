@@ -46,14 +46,14 @@ if __name__ == "__main__":
                 #print(workingSet[0]['close'])
                 sma = strategy.simpleMovingAverageAcrossTime(workingSet,0,currentBar)
 
-                currentPosition = connector.getPosition(connection, x['symbol'], 'hammer')
+                currentPosition = connector.getPosition(connection, x['symbol'], 'hammerBasic')
                 existingPosition = 0
                 #print(sma)
                 if len(currentPosition) == 0:
                     currentPosition = 0
                 else:
                     currentPosition = currentPosition[0]['position']
-                    targets = connector.getLossProfitFromLastTradeOnSymbol(connection, x['symbol'], 'hammerBuy')
+                    targets = connector.getLossProfitFromLastTradeOnSymbol(connection, x['symbol'], 'hammerBasicBuy')
                     if targets:
                         takeProfit = targets[0]['takeProfit']
                         lossProfit = targets[0]['takeLoss']
@@ -71,52 +71,52 @@ if __name__ == "__main__":
                     lossProfit = lossProfitPercent * closePrice
                     if strategy.submitBuyOrder(x['symbol'], shares, closePrice):
                         if existingPosition == 0:
-                            connector.insertPosition(connection,workingSet[currentBar]['symbol'], 'hammer')
+                            connector.insertPosition(connection,workingSet[currentBar]['symbol'], 'hammerBasic')
                         else:
-                            connector.modifyPosition(connection,workingSet[currentBar]['symbol'], 1, 'hammer')
-                        print("hammerBuy")
-                        connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'hammerBuy', connection,takeProfit,lossProfit)
+                            connector.modifyPosition(connection,workingSet[currentBar]['symbol'], 1, 'hammerBasic')
+                        print("hammerBasicBuy")
+                        connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'hammerBasicBuy', connection,takeProfit,lossProfit)
 
 
                 if currentPosition == 1:
                     if closePrice >= takeProfit:
-                        print('hsell')
-                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
+                        print('hBasicSell')
+                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBasicBuy')
                         shares = uncleanShareCount[0]['shareCount']
                         if strategy.submitSellOrder(x['symbol'], shares):
                             connector.addCash(connection, cashChange, 8)
-                            connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
+                            connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammerBasic')
                             #print("modifyPosition")
-                            connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'hammerSellAtTakeProfit', connection,0,0)
+                            connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'hammerBasicSellAtTakeProfit', connection,0,0)
 
 
 
                     elif closePrice <= lossProfit:
-                        print('hsell')
-                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
+                        print('hBasicSell')
+                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBasicBuy')
                         shares = uncleanShareCount[0]['shareCount']
                         if strategy.submitSellOrder(x['symbol'], shares):
                             connector.addCash(connection, cashChange, 8)
-                            connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
+                            connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammerBasic')
                             #print("modifyPosition")
-                            connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'hammerSellAtLossStop', connection,0,0)
+                            connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'hammerBasicSellAtLossStop', connection,0,0)
 
 
                     elif buyClose <= workingSet[currentBar]['timestamp'].time() and closePrice >= (takeProfit * lossProfitPercent):
-                        print('hsell')
-                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
+                        print('hBasicSell')
+                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBasicBuy')
                         shares = uncleanShareCount[0]['shareCount']
                         if strategy.submitSellOrder(x['symbol'], shares):
                             connector.addCash(connection, cashChange, 8)
-                            connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
-                            connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'hammerSellAtBuyClose', connection, 0,0)
+                            connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammerBasic')
+                            connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'hammerBasicSellAtBuyClose', connection, 0,0)
 
                     elif marketClose <= workingSet[currentBar]['timestamp'].time():
                         print('hsell')
-                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
+                        uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBasicBuy')
                         shares = uncleanShareCount[0]['shareCount']
                         if strategy.submitSellOrder(x['symbol'], shares):
                             connector.addCash(connection, cashChange, 8)
-                            connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
-                            connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'hammerSellAtMarketClose', connection, 0,0)
-    print("hammer time taken:", (datetime.datetime.now() - start_time))
+                            connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammerBasic')
+                            connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'hammerBasicSellAtMarketClose', connection, 0,0)
+    print("hammerBasic time taken:", (datetime.datetime.now() - start_time))
