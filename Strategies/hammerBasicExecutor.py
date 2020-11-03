@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
         takeProfit = floaty()
         lossProfit = floaty()
-        for x in symbols[0:50]:
+        for x in symbols[0:100]:
             workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
             cash = connector.getCash(connection,8)
             cash = cash[0]['cash']
@@ -64,7 +64,6 @@ if __name__ == "__main__":
                 cashChange = shares * closePrice
                 #prediction = strategy.predictOnHammer(workingSet)
                 if strategy.isHammerBar(workingSet[currentBar]) and sma < 0 and currentPosition != 1 and buyClose > workingSet[currentBar]['timestamp'].time():
-                #if prediction == 1 and currentPosition != 1 and buyClose > workingSet[currentBar]['timestamp'].time() and cash > cashChange:
                     print("-",cash)
                     connector.subtractCash(connection, cashChange, 8)
                     takeProfit = takeProfitPercent * closePrice
@@ -119,4 +118,4 @@ if __name__ == "__main__":
                             connector.addCash(connection, cashChange, 8)
                             connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammerBasic')
                             connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'hammerBasicSellAtMarketClose', connection, 0,0)
-    print("hammerBasic time taken:", (datetime.datetime.now() - start_time))
+    #print("hammerBasic time taken:", (datetime.datetime.now() - start_time))

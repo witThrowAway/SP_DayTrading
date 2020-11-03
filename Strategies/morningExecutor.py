@@ -37,11 +37,8 @@ if __name__ == "__main__":
                 window = datetime.datetime.now() - datetime.timedelta(minutes=3)
                 symbols = connector.getMentions(connection)
                 strategy = ad.Strategy()
-                ############ make value dynamic
-                #cash = 25000
                 cash = connector.getCash(connection,8)
                 cash = cash[0]['cash']
-                ############
 
                 #barNumber = 0
                 buyPrice = 0
@@ -54,7 +51,7 @@ if __name__ == "__main__":
 
                 takeProfit = floaty()
                 lossProfit = floaty()
-                for x in symbols[0:50]:
+                for x in symbols[0:100]:
                     workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
 
 
@@ -126,6 +123,6 @@ if __name__ == "__main__":
                                             connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0, 'morningStar')
                                             connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'morningStarSellAtBuyClose', connection,0,0)
 
-            print("morning time taken:", (datetime.datetime.now() - start_time))
+            #print("morning time taken:", (datetime.datetime.now() - start_time))
 
 
