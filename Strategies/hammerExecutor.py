@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
                 takeProfit = floaty()
                 lossProfit = floaty()
-                for x in symbols[0:100]:
+                for x in symbols[0:len(symbols-1)]:
                     workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
                     cash = connector.getCash(connection,8)
                     cash = cash[0]['cash']
@@ -77,6 +77,7 @@ if __name__ == "__main__":
 
 
                         if currentPosition == 1:
+                                    print(currentPosition, " ",workingSet[currentBar]['symbol'], " ", workingSet[currentBar]['timestamp'].time())
                                     if closePrice >= takeProfit:
                                             print('hsell')
                                             uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')

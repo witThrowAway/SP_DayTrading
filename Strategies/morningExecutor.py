@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
                 takeProfit = floaty()
                 lossProfit = floaty()
-                for x in symbols[0:100]:
+                for x in symbols[0:len(symbols-1)]:
                     workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
 
 
