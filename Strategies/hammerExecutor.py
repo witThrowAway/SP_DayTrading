@@ -34,12 +34,12 @@ if __name__ == "__main__":
 
                 takeProfit = floaty()
                 lossProfit = floaty()
-                for x in symbols[0:len(symbols-1)]:
+                for x in symbols[0:50]:
                     workingSet = connector.getBarsByTimeWindow(connection, window, now, x['symbol'])
                     cash = connector.getCash(connection,8)
                     cash = cash[0]['cash']
                     maxPosition = cash * .1
-                    if len(workingSet) == 5:
+                    if len(workingSet) >= 5:
                         #print(workingSet)
                         currentBar = len(workingSet)-1
                         #print(workingSet[0]['close'])
@@ -82,18 +82,18 @@ if __name__ == "__main__":
                                             print('hsell')
                                             uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                             shares = uncleanShareCount[0]['shareCount']
+                                            cashChange = shares * closePrice
                                             #if strategy.submitSellOrder(x['symbol'], shares):
                                             connector.addCash(connection, cashChange, 8)
                                             connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
                                                 #print("modifyPosition")
                                             connector.insertTrade(workingSet[currentBar]['symbol'], workingSet[currentBar]['high'], workingSet[currentBar]['low'], workingSet[currentBar]['open'], workingSet[currentBar]['close'], workingSet[currentBar]['volume'], shares, 'hammerSellAtTakeProfit', connection,0,0)
 
-
-
                                     elif closePrice <= lossProfit:
                                         print('hsell')
                                         uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                         shares = uncleanShareCount[0]['shareCount']
+                                        cashChange = shares * closePrice
                                         #if strategy.submitSellOrder(x['symbol'], shares):
                                         connector.addCash(connection, cashChange, 8)
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
@@ -105,6 +105,7 @@ if __name__ == "__main__":
                                         print('hsell')
                                         uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                         shares = uncleanShareCount[0]['shareCount']
+                                        cashChange = shares * closePrice
                                         #if strategy.submitSellOrder(x['symbol'], shares):
                                         connector.addCash(connection, cashChange, 8)
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
@@ -114,6 +115,7 @@ if __name__ == "__main__":
                                         print('hsell')
                                         uncleanShareCount = connector.getSharesFromLastTradeOnSymbol(connection, workingSet[currentBar]['symbol'], 'hammerBuy')
                                         shares = uncleanShareCount[0]['shareCount']
+                                        cashChange = shares * closePrice
                                         #if strategy.submitSellOrder(x['symbol'], shares):
                                         connector.addCash(connection, cashChange, 8)
                                         connector.modifyPosition(connection,workingSet[currentBar]['symbol'],0,'hammer')
