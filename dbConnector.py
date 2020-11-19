@@ -31,15 +31,16 @@ class dbConnector:
             return False
         finally:
             return True
+
     def insertBars(self, data, connection):
-            with connection.cursor() as cursor:
-                # Create a new record
-                #print(symbol, high, low, open, close, volume, connection)
-                sql = "INSERT INTO `Stonks` (`symbol`, `high`, `low`, `open`, `close`, `volume`, `timestamp`) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-                cursor.executemany(sql, data)
-                # connection is not autocommit by default. So you must commit to save
-                # your changes.
-                connection.commit()
+        with connection.cursor() as cursor:
+            # Create a new record
+            #print(symbol, high, low, open, close, volume, connection)
+            sql = "INSERT INTO `Stonks` (`symbol`, `high`, `low`, `open`, `close`, `volume`, `timestamp`) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+            cursor.executemany(sql, data)
+            # connection is not autocommit by default. So you must commit to save
+            # your changes.
+            connection.commit()
 
     def insertTrade(self, symbol, high, low, open, close, volume, shareCount, tradeType, connection, takeProfit, takeLoss):
         #try:
