@@ -1,8 +1,6 @@
 import dbConnector as db
 import alpaca_trade_api as tradeapi
-from Scrapers import redditScraper as rs
 import datetime
-from datetime import time
 import alpacaDrip as ad
 import pandas as pd
 from numpy import float as floaty
@@ -16,7 +14,7 @@ if __name__ == '__main__':
         #initialize API information
         ALPACA_KEY_ID = 'PKD6W26XBA1JGWOSJSU0'
         ALPACA_SECRET_KEY = r'ysaezMtOX8sUghmR534ZGzEXzCTVpkDt26BEIY8e'
-        APCA_RETRY_MAX=1
+        APCA_RETRY_MAX=0
         api = tradeapi.REST(
             key_id=ALPACA_KEY_ID,
             secret_key=ALPACA_SECRET_KEY,
@@ -30,25 +28,26 @@ if __name__ == '__main__':
         #Create time window to make api call for
         window = datetime.datetime.now() - datetime.timedelta(minutes=1)
         unscreened_stocks = connector.getMentions(connection)
-        count = 0
-        barType = 'barType'
         strategy = ad.Strategy()
+        aggregateData = []
         # iterate through symbols getting bar info for each symbol of last minute
-        for x in unscreened_stocks[0:100]:
+        for x in unscreened_stocks[0:len(unscreened_stocks)-1]:
             df = pd.DataFrame()
             tryCounter = 0
+            data = []
             # check if df has a value to account for API response time
             while df.empty and tryCounter < 5:
-                df = api.get_barset(unscreened_stocks[count]["symbol"], '1Min', limit=1, after=window).df
+                df = api.get_barset(x["symbol"], '1Min', limit=1, after=window).df
                 tryCounter +=1
             if not df.empty:
-                # symbol - high - low - open - close - volume - shareCount - timestamp - barType
-                try:
-                    symbol = unscreened_stocks[count]["symbol"]
-                    count += 1
-                    connector.insertBar(str(symbol), floaty(df[symbol]['high'][0]), floaty(df[symbol]['low'][0]), floaty(df[symbol]['open'][0]),floaty(df[symbol]['close'][0]), floaty(df[symbol]['volume'][0]), connection)
-
-                except Exception as e:
-                    print(str(e))
+                data.append(x['symbol'])
+                data.append(floaty(df.iloc[0][0]))
+                data.append(floaty(df.iloc[0][1]))
+                data.append(floaty(df.iloc[0][2]))
+                data.append(floaty(df.iloc[0][3]))
+                data.append(floaty(df.iloc[0][4]))
+                data.append(window)
+                aggregateData.append(data)
+    connector.insertBars(aggregateData,connection)
 
     print("--- %s seconds ---" % (datetime.datetime.now() - start))

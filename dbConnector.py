@@ -8,7 +8,7 @@ class dbConnector:
     def createConnection(self):
         # Connect to the database
 
-        connection = pymysql.connect(host='10.0.1.14',
+        connection = pymysql.connect(host='10.0.1.19',
                                  user='trade',
                                  password='autotrade',
                                  db='GrandExchange',
@@ -16,13 +16,13 @@ class dbConnector:
                                  cursorclass=pymysql.cursors.DictCursor)
         return connection
 
-    def insertBar(self, symbol, high, low, open, close, volume, connection):
+    def insertBar(self, symbol, high, low, open, close, volume, connection, timestamp):
         try:
             with connection.cursor() as cursor:
                 # Create a new record
                 #print(symbol, high, low, open, close, volume, connection)
-                sql = "INSERT INTO `Stonks` (`symbol`, `high`, `low`, `open`, `close`, `volume`) VALUES (%s, %s, %s, %s, %s, %s)"
-                cursor.execute(sql, (symbol, high, low, open, close, volume))
+                sql = "INSERT IGNORE INTO `Stonks` (`symbol`, `high`, `low`, `open`, `close`, `volume`) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+                cursor.execute(sql, (symbol, high, low, open, close, volume, timestamp))
                 # connection is not autocommit by default. So you must commit to save
                 # your changes.
                 connection.commit()
@@ -31,6 +31,16 @@ class dbConnector:
             return False
         finally:
             return True
+    def insertBars(self, data, connection):
+            with connection.cursor() as cursor:
+                # Create a new record
+                #print(symbol, high, low, open, close, volume, connection)
+                sql = "INSERT INTO `Stonks` (`symbol`, `high`, `low`, `open`, `close`, `volume`, `timestamp`) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+                cursor.executemany(sql, data)
+                # connection is not autocommit by default. So you must commit to save
+                # your changes.
+                connection.commit()
+
     def insertTrade(self, symbol, high, low, open, close, volume, shareCount, tradeType, connection, takeProfit, takeLoss):
         #try:
             with connection.cursor() as cursor:
@@ -230,10 +240,10 @@ class dbConnector:
             cursor.execute(sql, (cash,date))
             connection.commit()
         return True
-    def setResultCash(self, connection):
+    def setResultCash(self, connection, time):
         with connection.cursor() as cursor:
-            sql = "UPDATE `Results` SET `resultCash` = `endCash` - `startCash`"
-            cursor.execute(sql)
+            sql = "UPDATE `Results` SET `resultCash` = `endCash` - `startCash` where `date` = %s"
+            cursor.execute(sql, time)
             connection.commit()
         return True
     def getResultsByDate(self,connection, date):
@@ -250,7 +260,7 @@ class dbConnector:
     def getTradesAlgoAndDate(self,connection, tradeType1, tradeType2, tradeType3, tradeType4, tradeType5, tradeType6):
         try:
             with connection.cursor() as cursor:
-                sql = "SELECT symbol, close, tradeType, timestamp FROM `Trades` WHERE DATE(`timestamp`) > CURDATE() - INTERVAL 12 DAY and DATE(`timestamp`) < CURDATE() - INTERVAL 6 DAY and (tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s)"
+                sql = "SELECT symbol, close, tradeType, timestamp FROM `Trades` WHERE DATE(`timestamp`) > CURDATE() - INTERVAL 1 DAY and (tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s or tradeType = %s)"
                 cursor.execute(sql,(tradeType1,tradeType2,tradeType3,tradeType4, tradeType5, tradeType6))
                 result = cursor.fetchall()
         except Exception as e:
